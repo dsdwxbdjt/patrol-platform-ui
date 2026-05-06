@@ -5,10 +5,7 @@ import { useAppStore } from '@/stores'
 const appStore = useAppStore()
 
 onMounted(() => {
-  const s = document.createElement('script')
-  s.async = true
-  s.src = `https://cdn.wwads.cn/js/makemoney.js`
-  document.querySelector('.wwads-container')!.appendChild(s)
+
 })
 </script>
 

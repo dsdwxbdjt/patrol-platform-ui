@@ -24,12 +24,12 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
 }
 
 const directive: Directive = {
-  mounted(el: HTMLElement, binding: DirectiveBinding) {
-    checkPermission(el, binding)
-  },
-  updated(el: HTMLElement, binding: DirectiveBinding) {
-    checkPermission(el, binding)
-  },
+  // mounted(el: HTMLElement, binding: DirectiveBinding) {
+  //   checkPermission(el, binding)
+  // },
+  // updated(el: HTMLElement, binding: DirectiveBinding) {
+  //   checkPermission(el, binding)
+  // },
 }
 
 export default directive

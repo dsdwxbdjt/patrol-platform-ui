@@ -2,7 +2,7 @@
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="toHome">
     <img v-if="logo" class="logo" :src="logo" alt="logo" />
     <img v-else class="logo" src="/logo.svg" alt="logo" />
-    <span v-if="!props.hideName" class="system-name gi_line_1">{{ title }}</span>
+    <span class="system-name gi_line_1">{{ title }}</span>
   </section>
 </template>
 
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 })
 const appStore = useAppStore()
-const title = computed(() => appStore.getTitle())
+const title = 'ContiNew Admin'
 const logo = computed(() => appStore.getLogo())
 
 /** Props 类型定义 */

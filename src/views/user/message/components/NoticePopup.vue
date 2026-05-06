@@ -38,31 +38,6 @@
           <AiEditor v-else v-model:model-value="currentNoticeContent" />
         </div>
       </div>
-
-      <!-- 底部操作区域 -->
-      <div class="notice-footer">
-        <div class="notice-actions">
-          <span class="pagination-info">
-            {{ currentIndex + 1 }} / {{ unreadNoticeIds.length }}
-          </span>
-
-          <!-- 翻页按钮 -->
-          <div class="pagination-controls">
-            <a-button
-              v-if="currentIndex > 0"
-              @click="previousNotice"
-            >
-              上一篇
-            </a-button>
-            <a-button
-              v-if="currentIndex < unreadNoticeIds.length - 1"
-              @click="nextNotice"
-            >
-              下一篇
-            </a-button>
-          </div>
-        </div>
-      </div>
     </div>
   </a-modal>
 </template>
@@ -70,7 +45,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AiEditor from './view/components/index.vue'
-import { getUnreadNoticeIds, getUserNotice } from '@/apis/system/user-message'
+import { getUserNotice } from '@/apis/system/user-message'
 import type { NoticePreviewResp } from '@/apis/system'
 
 defineOptions({ name: 'NoticePopup' })
@@ -139,47 +114,6 @@ const fetchNoticeDetail = async (index: number) => {
   }
 }
 
-// 获取指定公告的详情
-const fetchUnreadNotices = async () => {
-  try {
-    loading.value = true
-    const { data: noticeIds } = await getUnreadNoticeIds(props.method)
-
-    if (noticeIds && noticeIds.length > 0) {
-      unreadNoticeIds.value = noticeIds
-      visible.value = true
-      // 获取第一篇公告的详情
-      await fetchNoticeDetail(0)
-      // 确保当前索引设置为0
-      currentIndex.value = 0
-    }
-  } catch (error) {
-    console.error('获取未读公告失败:', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 上一条公告
-const previousNotice = async () => {
-  if (currentIndex.value > 0) {
-    // 计算新的索引
-    const newIndex = currentIndex.value - 1
-    // 获取公告详情
-    await fetchNoticeDetail(newIndex)
-  }
-}
-
-// 下一条公告
-const nextNotice = async () => {
-  if (currentIndex.value < unreadNoticeIds.value.length - 1) {
-    // 计算新的索引
-    const newIndex = currentIndex.value + 1
-    // 获取公告详情
-    await fetchNoticeDetail(newIndex)
-  }
-}
-
 // 关闭弹窗
 const onClose = () => {
   visible.value = false
@@ -191,7 +125,7 @@ const onClose = () => {
 
 // 打开弹窗
 const open = () => {
-  fetchUnreadNotices()
+
 }
 
 defineExpose({

@@ -40,11 +40,6 @@ export function getUnreadNoticeCount() {
   return http.get(`${BASE_URL}/notice/unread`)
 }
 
-/** @desc 查询未读公告 ID 列表 */
-export function getUnreadNoticeIds(method: string) {
-  return http.get<number[]>(`${BASE_URL}/notice/unread/${method}`)
-}
-
 /** @desc 分页查询用户公告 */
 export function listUserNotice(query: T.NoticePageQuery) {
   return http.get<PageRes<T.NoticeResp[]>>(`${BASE_URL}/notice`, query)

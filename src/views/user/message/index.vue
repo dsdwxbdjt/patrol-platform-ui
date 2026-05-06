@@ -18,14 +18,11 @@
         </a-tab-pane>
       </a-tabs>
     </template>
-    <component :is="menuList.find((item) => item.key === activeKey)?.value"></component>
   </GiPageLayout>
 </template>
 
 <script setup lang="tsx">
 import { useRoute, useRouter } from 'vue-router'
-import MyMessage from './components/MyMessage.vue'
-import MyNotice from './components/MyNotice.vue'
 import { useDevice } from '@/hooks'
 import {
   getUnreadMessageCount,
@@ -78,11 +75,6 @@ onMounted(() => {
     getNoticeData()
   })
 })
-
-const menuList = [
-  { name: '我的消息', key: 'msg', value: MyMessage },
-  { name: '我的公告', key: 'notice', value: MyNotice },
-]
 
 const route = useRoute()
 const router = useRouter()

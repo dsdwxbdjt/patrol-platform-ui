@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, reactive, toRefs } from 'vue'
 import { generate, getRgbStr } from '@arco-design/color'
-import { type BasicConfig, listSiteOptionDict } from '@/apis/system'
+import { type BasicConfig } from '@/apis/system'
 import { getSettings } from '@/config/setting'
 
 const storeSetup = () => {
@@ -54,10 +54,8 @@ const storeSetup = () => {
     settingConfig.menuCollapse = collapsed
   }
 
-  // 系统配置配置
   const siteConfig = reactive({}) as BasicConfig
 
-  // 设置系统配置
   const setSiteConfig = (config: BasicConfig) => {
     Object.assign(siteConfig, config)
     document.title = config.SITE_TITLE || ''

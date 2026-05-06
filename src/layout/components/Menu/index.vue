@@ -11,7 +11,7 @@
     @menu-item-click="onMenuItemClick"
     @collapse="onCollapse"
   >
-    <MenuItem v-for="(item, index) in sidebarRoutes" :key="item.path + index" :item="item"></MenuItem>
+    <MenuItem v-for="(item, index) in systemRoutes" :key="item.path + index" :item="item"></MenuItem>
   </a-menu>
 </template>
 
@@ -22,6 +22,7 @@ import MenuItem from './MenuItem.vue'
 import { useAppStore, useRouteStore } from '@/stores'
 import { isExternal } from '@/utils/validate'
 import { useDevice } from '@/hooks'
+import { systemRoutes } from '@/router/route'
 
 defineOptions({ name: 'AppMenu' })
 const props = withDefaults(defineProps<Props>(), {})
@@ -40,7 +41,6 @@ const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const routeStore = useRouteStore()
-const sidebarRoutes = computed(() => (props.menus ? props.menus : routeStore.routes))
 
 // 菜单垂直模式/水平模式
 const mode = computed(() => {
