@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
-import { updateUserBaseInfo } from '@/apis/system'
+import { updateUser } from '@/apis/system'
 import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useUserStore } from '@/stores'
 import { useResetReactive } from '@/hooks'
@@ -68,7 +68,7 @@ const save = async () => {
   const isInvalid = await formRef.value?.formRef?.validate()
   if (isInvalid) return false
   try {
-    await updateUserBaseInfo(form)
+    await updateUser(form, userInfo.value.id)
     Message.success('修改成功')
     // 修改成功后，重新获取用户信息
     await userStore.getInfo()

@@ -59,7 +59,6 @@ const handleLogin = async () => {
     const isInvalid = await formRef.value?.validate()
     if (isInvalid) return
     loading.value = true
-    await userStore.emailLogin(form, tenantCode.value)
     tabsStore.reset()
     const { redirect, ...othersQuery } = router.currentRoute.value.query
 

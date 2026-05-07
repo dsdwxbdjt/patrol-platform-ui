@@ -2,7 +2,7 @@ import type * as T from './type'
 import http from '@/utils/http'
 import type { LabelValueState } from '@/types/global'
 
-const BASE_URL = '/system/user'
+const BASE_URL = '/api/user'
 
 /** @desc 查询用户列表 */
 export function listUser(query: T.UserPageQuery) {
@@ -26,7 +26,7 @@ export function addUser(data: any) {
 
 /** @desc 修改用户 */
 export function updateUser(data: any, id: string) {
-  return http.put(`${BASE_URL}/${id}`, data)
+  return http.put(`${BASE_URL}/edit/${id}`, data)
 }
 
 /** @desc 删除用户 */

@@ -24,10 +24,6 @@
           </span>
           <icon-edit :size="16" class="btn" @click="onUpdate" />
         </div>
-        <div class="id">
-          <GiSvgIcon name="id" :size="16" />
-          <span>{{ userInfo.id }}</span>
-        </div>
       </section>
       <footer>
         <a-descriptions :column="4" size="large">
@@ -43,18 +39,10 @@
             <template #label> <icon-email /><span style="margin-left: 5px">邮箱</span></template>
             {{ userInfo.email || '暂无' }}
           </a-descriptions-item>
-          <a-descriptions-item :span="4">
-            <template #label> <icon-mind-mapping /><span style="margin-left: 5px">部门</span></template>
-            {{ userInfo.deptName }}
-          </a-descriptions-item>
-          <a-descriptions-item :span="4">
-            <template #label> <icon-user-group /><span style="margin-left: 5px">角色</span></template>
-            {{ userInfo.roleNames.join(' · ') }}
-          </a-descriptions-item>
         </a-descriptions>
       </footer>
     </div>
-    <div class="footer">注册于 {{ userInfo.registrationDate }}</div>
+    <div class="footer">创建于 {{ userInfo.createdAt }}</div>
   </a-card>
 
   <a-modal v-model:visible="visible" title="上传头像" :width="width >= 400 ? 400 : '100%'" :footer="false" draggable @close="reset">
@@ -85,25 +73,17 @@
         </div>
       </a-col>
     </a-row>
-    <div style="text-align: center; padding-top: 30px">
-      <a-space>
-        <a-button type="primary" @click="handleUpload">确定</a-button>
-        <a-button @click="reset">取消</a-button>
-      </a-space>
-    </div>
   </a-modal>
   <BasicInfoUpdateModal ref="BasicInfoUpdateModalRef" />
 </template>
 
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
-import { type FileItem, Message } from '@arco-design/web-vue'
+import { type FileItem } from '@arco-design/web-vue'
 import { VueCropper } from 'vue-cropper'
 import BasicInfoUpdateModal from './BasicInfoUpdateModal.vue'
-import { uploadAvatar } from '@/apis/system'
 import 'vue-cropper/dist/index.css'
 import { useUserStore } from '@/stores'
-import getAvatar from '@/utils/avatar'
 
 const { width } = useWindowSize()
 const userStore = useUserStore()
@@ -116,7 +96,7 @@ const avatar = {
 }
 const avatarList = ref<FileItem[]>([avatar])
 const fileRef = ref(reactive({ name: 'avatar.png' }))
-const options: cropperOptions = reactive({
+const options: any = reactive({
   img: '',
   autoCrop: true,
   autoCropWidth: 160,
@@ -162,21 +142,6 @@ const handleRealTime = (data: any) => {
     borderRadius: '50%',
   }
   previews.value = data
-}
-
-const cropperRef = ref()
-// 上传头像
-const handleUpload = async () => {
-  cropperRef.value.getCropBlob((data: any) => {
-    const formData = new FormData()
-    formData.append('avatarFile', data, fileRef.value?.name)
-    uploadAvatar(formData).then((res) => {
-      userInfo.value.avatar = res.data.avatar
-      avatarList.value[0].url = getAvatar(res.data.avatar, undefined)
-      reset()
-      Message.success('更新成功')
-    })
-  })
 }
 
 const BasicInfoUpdateModalRef = ref<InstanceType<typeof BasicInfoUpdateModal>>()

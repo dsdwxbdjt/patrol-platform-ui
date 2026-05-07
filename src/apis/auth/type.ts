@@ -11,9 +11,6 @@ export interface UserInfo {
   pwdExpired: boolean
   registrationDate: string
   deptName: string
-  roles: string[]
-  roleNames: string[]
-  permissions: string[]
 }
 
 /** 路由类型 */

@@ -113,7 +113,6 @@ const logout = () => {
     closable: true,
     onBeforeOk: async () => {
       try {
-        await userStore.logout()
         await router.replace('/login')
         return true
       } catch (error) {
