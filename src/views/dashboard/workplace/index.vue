@@ -1,97 +1,92 @@
 <template>
-  <div class="gi_page container">
-    <div class="left-side">
-      <div class="panel">
-        
-      </div>
-    </div>
-  </div>
+  <GiPageLayout>
+    <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading" :scroll="{ x: '100%', y: '100%', minWidth: 1800 }" :pagination="pagination" :disabled-tools="['size']" @refresh="search">
+      <template #top>
+        <GiForm v-model="queryForm" search :columns="queryFormColumns" size="medium" @search="search" @reset="reset"></GiForm>
+      </template>
+      <template #status="{ record }">
+        <GiCellStatus :status="record.status" />
+      </template>
+      <template #batteryStatus="{ record }">
+        <a-tag v-if="record.batteryStatus === 1" color="green" size="small">正常</a-tag>
+        <a-tag v-else-if="record.batteryStatus === 2" color="red" size="small">异常</a-tag>
+        <a-tag v-else color="gray" size="small">未知</a-tag>
+      </template>
+      <template #onlineRiderCount="{ record }">
+        <span>{{ record.onlineRiderCount }} / {{ record.riderCount }}</span>
+      </template>
+      <template #operation="{ record }">
+        <a-link>查看</a-link>
+        <a-link>编辑</a-link>
+        <a-link @click="onDelete(record)" status="danger">删除</a-link>
+      </template>
+    </GiTable>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
+import { h } from 'vue'
+import { stationList, type StationInfo, deleteStation } from '@/apis/station/station-info'
+import { DisEnableStatusList } from '@/constant/common'
+import { useResetReactive, useTable } from '@/hooks'
+import { isMobile } from '@/utils'
+import type { ColumnItem } from '@/components/GiForm'
 
 defineOptions({ name: 'Workplace' })
+
+const [queryForm, resetForm] = useResetReactive({})
+const queryFormColumns: ColumnItem[] = reactive([
+  {
+    type: 'input',
+    label: '站点名称',
+    field: 'name',
+    span: { xs: 24, sm: 8, xxl: 8 },
+    props: {
+      placeholder: '请输入站点名称',
+    },
+  },
+  {
+    type: 'select',
+    label: '状态',
+    field: 'status',
+    span: { xs: 24, sm: 6, xxl: 8 },
+    props: {
+      options: DisEnableStatusList,
+      placeholder: '请选择状态',
+    },
+  },
+])
+
+const { tableData: dataList, loading, pagination, search, handleDelete } = useTable((page) => stationList({ ...queryForm, ...page }), { immediate: true })
+
+const columns: TableInstance['columns'] = [
+  {
+    title: '序号',
+    width: 66,
+    align: 'center',
+    render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
+    fixed: !isMobile() ? 'left' : undefined,
+  },
+  { title: '站点名称', dataIndex: 'name', width: 150, ellipsis: true, tooltip: true, fixed: !isMobile() ? 'left' : undefined },
+  { title: '区县', dataIndex: 'district', width: 100 },
+  { title: '街道', dataIndex: 'street', width: 100 },
+  { title: '站长姓名', dataIndex: 'managerName', width: 100 },
+  { title: '站长电话', dataIndex: 'managerPhone', width: 130 },
+  { title: '详细地址', dataIndex: 'address', width: 150, ellipsis: true, tooltip: true },
+  { title: '状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center' },
+  { title: '操作', dataIndex: 'operation', slotName: 'operation', width: 100, align: 'center' },
+]
+
+const onDelete = async (record: StationInfo) => {
+  return handleDelete(() => deleteStation(record.id), {
+    content: `是否确定删除「${record.name}」？`,
+    showModal: true,
+  })
+}
+
+const reset = () => {
+  resetForm()
+  search()
+}
 </script>
-
-<style scoped lang="scss">
-.container {
-  display: flex;
-}
-
-.left-side {
-  flex: 1;
-}
-
-.right-side {
-  width: 280px;
-  margin-left: 14px;
-}
-
-.panel {
-  background-color: var(--color-bg-2);
-  border-radius: 4px;
-  overflow: auto;
-}
-:deep(.panel-border) {
-  margin-bottom: 0;
-  border-bottom: 1px solid rgb(var(--gray-2));
-}
-.moduler-wrap {
-  border-radius: 4px;
-  background-color: var(--color-bg-2);
-  :deep(.text) {
-    font-size: 12px;
-    text-align: center;
-    color: rgb(var(--gray-8));
-  }
-
-  :deep(.wrapper) {
-    margin-bottom: 8px;
-    text-align: center;
-    cursor: pointer;
-
-    &:last-child {
-      .text {
-        margin-bottom: 0;
-      }
-    }
-    &:hover {
-      .icon {
-        color: rgb(var(--arcoblue-6));
-        background-color: #e8f3ff;
-      }
-      .text {
-        color: rgb(var(--arcoblue-6));
-      }
-    }
-  }
-
-  :deep(.icon) {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    margin-bottom: 4px;
-    color: rgb(var(--dark-gray-1));
-    line-height: 32px;
-    font-size: 16px;
-    text-align: center;
-    background-color: rgb(var(--gray-1));
-    border-radius: 4px;
-  }
-}
-</style>
-
-<style lang="less" scoped>
-// responsive
-.mobile {
-  .container {
-    display: block;
-  }
-  .right-side {
-    // display: none;
-    width: 100%;
-    margin-left: 0;
-    margin-top: 16px;
-  }
-}
-</style>

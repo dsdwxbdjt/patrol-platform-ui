@@ -16,13 +16,19 @@ export const systemRoutes: RouteRecordRaw[] = [
     name: 'Dashboard',
     component: Layout,
     redirect: '/dashboard/workplace',
-    meta: { title: '仪表盘', icon: 'dashboard', hidden: false },
+    meta: { title: '站点信息管理', icon: 'dashboard', hidden: false },
     children: [
       {
         path: '/dashboard/workplace',
         name: 'Workplace',
         component: () => import('@/views/dashboard/workplace/index.vue'),
-        meta: { title: '工作台', icon: 'desktop', hidden: false, affix: true },
+        meta: { title: '骑手站点管理', icon: 'desktop', hidden: false, affix: true },
+      },
+      {
+        path: '/dashboard/workplaces',
+        name: 'Workplaces',
+        component: () => import('@/views/dashboard/workplace/index.vue'),
+        meta: { title: '站点标签管理', icon: 'desktop', hidden: false, affix: true },
       },
     ],
   },
