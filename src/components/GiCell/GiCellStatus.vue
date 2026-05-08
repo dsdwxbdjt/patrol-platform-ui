@@ -3,7 +3,7 @@
     <icon-check-circle-fill class="success" />
     <span>启用</span>
   </span>
-  <span v-if="props.status === 2">
+  <span v-if="props.status === 0">
     <icon-minus-circle-fill class="warning" />
     <span>禁用</span>
   </span>
@@ -13,11 +13,11 @@
 defineOptions({ name: 'GiCellStatus' })
 
 const props = withDefaults(defineProps<Props>(), {
-  status: 1,
+  status: 0,
 })
 
 interface Props {
-  status: 1 | 2
+  status: 1 | 0
 }
 </script>
 

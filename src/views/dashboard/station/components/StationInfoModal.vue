@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { addStation, getStationDetail } from '@/apis/station/station-info'
+import { addStation, getStationDetail, editStation } from '@/apis/station/station-info'
 
 defineOptions({ name: 'StationInfoModal' })
 
@@ -69,7 +69,11 @@ const columns: any[] = reactive([
 async function handleSubmit() {
   isSubmitting.value = true
   try {
-    await addStation(form.value)
+    if (editId.value) {
+      await editStation(form.value, editId.value)
+    } else {
+      await addStation(form.value)
+    }
     emit('submitted')
     close()
   } catch (_) {

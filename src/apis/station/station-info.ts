@@ -47,7 +47,7 @@ export function addStation(data: any) {
 
 /** @desc 编辑站点信息 */
 export function editStation(data: any, id: string) {
-  return http.put(`${BASE_URL}/add/${id}`, data)
+  return http.put(`${BASE_URL}/${id}`, data)
 }
 
 /** @desc 获取站点详情 */
