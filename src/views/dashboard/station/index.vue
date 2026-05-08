@@ -1,6 +1,12 @@
 <template>
   <GiPageLayout>
     <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading" :scroll="{ x: '100%', y: '100%', minWidth: 1800 }" :pagination="pagination" :disabled-tools="['size']" @refresh="search">
+      <template #toolbar-left>
+        <a-button type="primary" @click="onAdd">
+          <template #icon><icon-plus /></template>
+          <template #default>新增</template>
+        </a-button>
+      </template>
       <template #top>
         <GiForm v-model="queryForm" search :columns="queryFormColumns" size="medium" @search="search" @reset="reset"></GiForm>
       </template>
@@ -17,10 +23,11 @@
       </template>
       <template #operation="{ record }">
         <a-link>查看</a-link>
-        <a-link>编辑</a-link>
+        <a-link @click="onEdit(record)">编辑</a-link>
         <a-link @click="onDelete(record)" status="danger">删除</a-link>
       </template>
     </GiTable>
+    <StationInfoModal ref="stationInfoModalRef" @submitted="search" />
   </GiPageLayout>
 </template>
 
@@ -32,16 +39,17 @@ import { DisEnableStatusList } from '@/constant/common'
 import { useResetReactive, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import type { ColumnItem } from '@/components/GiForm'
+import StationInfoModal from './components/StationInfoModal.vue'
 
 defineOptions({ name: 'Workplace' })
-
+const stationInfoModalRef = ref<typeof StationInfoModal>()
 const [queryForm, resetForm] = useResetReactive({})
 const queryFormColumns: ColumnItem[] = reactive([
   {
     type: 'input',
     label: '站点名称',
     field: 'name',
-    span: { xs: 24, sm: 8, xxl: 8 },
+    span: { xs: 24, sm: 6, xxl: 8 },
     props: {
       placeholder: '请输入站点名称',
     },
@@ -77,6 +85,14 @@ const columns: TableInstance['columns'] = [
   { title: '状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center' },
   { title: '操作', dataIndex: 'operation', slotName: 'operation', width: 100, align: 'center' },
 ]
+
+const onAdd = () => {
+  stationInfoModalRef.value?.onOpen()
+}
+
+const onEdit = (record: any) => {
+  stationInfoModalRef.value?.onOpen(record)
+}
 
 const onDelete = async (record: StationInfo) => {
   return handleDelete(() => deleteStation(record.id), {

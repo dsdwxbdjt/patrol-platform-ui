@@ -39,3 +39,19 @@ export function stationList(query?: StationListQuery) {
 export function deleteStation(id: string) {
   return http.del(`${BASE_URL}/${id}`)
 }
+
+/** @desc 新增站点信息 */
+export function addStation(data: any) {
+  return http.post(`${BASE_URL}/add`, data)
+}
+
+/** @desc 编辑站点信息 */
+export function editStation(data: any, id: string) {
+  return http.put(`${BASE_URL}/add/${id}`, data)
+}
+
+/** @desc 获取站点详情 */
+export function getStationDetail(id: string) {
+  return http.get(`${BASE_URL}/${id}`)
+}
+
