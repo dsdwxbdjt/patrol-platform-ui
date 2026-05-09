@@ -8,7 +8,7 @@ export interface Options {
   defaultSizeOptions: number[]
 }
 
-export function usePagination(callback: Callback, options: Options = { defaultPageSize: 10, defaultSizeOptions: [10, 20, 30, 40, 50] }) {
+export function usePagination(callback: Callback, options: Options = { defaultPageSize: 20, defaultSizeOptions: [10, 20, 30, 40, 50] }) {
   const { breakpoint } = useBreakpoint()
 
   const pagination = reactive({

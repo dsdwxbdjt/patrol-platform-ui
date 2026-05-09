@@ -33,6 +33,20 @@ export const systemRoutes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/user-info',
+    name: 'UserInfo',
+    component: Layout,
+    meta: { title: '用户管理', icon: 'dashboard', hidden: false },
+    children: [
+      {
+        path: '/user-info',
+        name: 'UserInfo',
+        component: () => import('@/views/user-info/index.vue'),
+        meta: { title: '用户管理', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
     path: '/social/callback',
     component: () => import('@/views/login/social/index.vue'),
     meta: { hidden: true },

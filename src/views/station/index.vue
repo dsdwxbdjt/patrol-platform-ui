@@ -34,14 +34,11 @@
 <script setup lang="ts">
 import type { TableInstance } from '@arco-design/web-vue'
 import { h } from 'vue'
-import { stationList, type StationInfo, deleteStation } from '@/apis/station/station-info'
+import { stationList, type StationInfo, deleteStation } from '@/apis'
 import { DisEnableStatusList } from '@/constant/common'
 import { useResetReactive, useTable } from '@/hooks'
-import { isMobile } from '@/utils'
 import type { ColumnItem } from '@/components/GiForm'
 import StationInfoModal from './components/StationInfoModal.vue'
-
-defineOptions({ name: 'Workplace' })
 const stationInfoModalRef = ref<typeof StationInfoModal>()
 const [queryForm, resetForm] = useResetReactive({})
 const queryFormColumns: ColumnItem[] = reactive([
@@ -71,12 +68,12 @@ const { tableData: dataList, loading, pagination, search, handleDelete } = useTa
 const columns: TableInstance['columns'] = [
   {
     title: '序号',
-    width: 66,
+    width: 50,
     align: 'center',
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
-    fixed: !isMobile() ? 'left' : undefined,
+    fixed: 'left',
   },
-  { title: '站点名称', dataIndex: 'name', width: 150, ellipsis: true, tooltip: true, fixed: !isMobile() ? 'left' : undefined },
+  { title: '站点名称', dataIndex: 'name', width: 150, ellipsis: true, tooltip: true, fixed: 'left' },
   { title: '区县', dataIndex: 'district', width: 100 },
   { title: '街道', dataIndex: 'street', width: 100 },
   { title: '站长姓名', dataIndex: 'managerName', width: 100 },

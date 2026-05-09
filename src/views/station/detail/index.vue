@@ -22,6 +22,7 @@
       <div class="tab-section">
         <a-tabs v-model:activeKey="activeTab">
           <a-tab-pane key="1" title="站点人员">
+            <UseInfo />
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -33,6 +34,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getStationDetail, type StationInfo } from '@/apis/station/station-info'
+import UseInfo from './components/UseInfo.vue'
 
 defineOptions({ name: 'StationDetail' })
 
