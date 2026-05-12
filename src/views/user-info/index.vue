@@ -19,9 +19,13 @@
       <template #operation="{ record }">
         <StationSelect v-if="record.stations.length === 0" @select-station="(val) => selectStation(val, record)"  buttonName="绑定站点" modelType="link" />
         <a-link v-else @click="unBindStation(record)">解绑站点</a-link>
+        <a-link @click="editUser(record)">编辑</a-link>
       </template>
       <template #stationName="{ record }">
-        <a-link @click="toStation(record.stations[0])">{{ record.stations.map((val: any) => val.station.name)[0] }}</a-link>
+        <a-link @click="toStation(record.stations[0])">{{ record.stations.map((val: any) => val.name)[0] }}</a-link>
+      </template>
+      <template #role="{ record }">
+        <a-tag style="margin-left: 10px;" v-for="role in record.role" :key="role.id">{{ role.name }}</a-tag>
       </template>
     </GiTable>
   </GiPageLayout>
@@ -67,7 +71,7 @@ const router = useRouter()
 
 const toStation = (station: any) => {
   router.push({
-    path: `/station/${station.stationId}`
+    path: `/station/${station.id}`
   })
 }
 
@@ -84,6 +88,7 @@ const columns = [
   { title: '手机号', dataIndex: 'phone', width: 100, align: 'center' },
   { title: '邮箱', dataIndex: 'email', width: 100, align: 'center' },
   { title: '性别', dataIndex: 'gender', slotName: 'gender',width: 100, align:'center' },
+  { title: '角色', dataIndex: 'role', slotName: 'role',width: 100, align:'center' },
   { title: '在线状态', dataIndex: 'status', slotName: 'status',width: 100, align:'center' },
   { title: '操作', dataIndex: 'operation', slotName: 'operation',width: 100, align:'center' },
 ]
@@ -93,6 +98,10 @@ const selectStation = async (val: any, record: any) => {
     await addUserStation(record.id, { stationId: val[0].id })
     search()
   }
+}
+
+const editUser = (record: any) => {
+
 }
 
 const unBindStation = async (record: any) => {
