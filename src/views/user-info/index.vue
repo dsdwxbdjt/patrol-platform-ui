@@ -16,13 +16,20 @@
       <template #status="{ record }">
         <GiCellTag :value="record.status" :dict="isOnlineDict" />
       </template>
+      <template #operation="{ record }">
+        <StationSelect v-if="record.stations.length === 0" @select-station="(val) => selectStation(val, record)"  buttonName="绑定站点" modelType="link" />
+        <a-link v-else @click="unBindStation(record)">解绑站点</a-link>
+      </template>
+      <template #stationName="{ record }">
+        <a-link @click="toStation(record.stations[0])">{{ record.stations.map((val: any) => val.station.name)[0] }}</a-link>
+      </template>
     </GiTable>
   </GiPageLayout>
 </template>
 
 <script lang="ts" setup>
 import { useTable, useResetReactive } from '@/hooks'
-import { getUserList } from '@/apis'
+import { getUserList, addUserStation, unBindUserStation } from '@/apis'
 const [queryForm, resetForm] = useResetReactive({})
 
 const genderDict = [
@@ -56,6 +63,14 @@ const isOnlineDict = [
   },
 ]
 
+const router = useRouter()
+
+const toStation = (station: any) => {
+  router.push({
+    path: `/station/${station.stationId}`
+  })
+}
+
 const columns = [
   {
     title: '序号',
@@ -64,13 +79,28 @@ const columns = [
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
     fixed: 'left',
   },
-  { title: '昵称', dataIndex: 'nickname', width: 100 },
-  { title: '手机号', dataIndex: 'phone', width: 100 },
-  { title: '邮箱', dataIndex: 'email', width: 100 },
+  { title: '姓名', dataIndex: 'nickname', width: 100, align: 'center' },
+  { title: '关联站点', dataIndex: 'stationName', slotName: 'stationName',width: 100, align:'center' },
+  { title: '手机号', dataIndex: 'phone', width: 100, align: 'center' },
+  { title: '邮箱', dataIndex: 'email', width: 100, align: 'center' },
   { title: '性别', dataIndex: 'gender', slotName: 'gender',width: 100, align:'center' },
   { title: '在线状态', dataIndex: 'status', slotName: 'status',width: 100, align:'center' },
+  { title: '操作', dataIndex: 'operation', slotName: 'operation',width: 100, align:'center' },
 ]
 
+const selectStation = async (val: any, record: any) => {
+  if (val.length) {
+    await addUserStation(record.id, { stationId: val[0].id })
+    search()
+  }
+}
+
+const unBindStation = async (record: any) => {
+  return handleDelete(() => unBindUserStation(record.id), {
+    content: `是否确认解绑该站点`,
+    showModal: true,
+  })
+}
 
 const { tableData: dataList, loading, pagination, search, handleDelete } = useTable((page) => getUserList({ ...queryForm, ...page }), { immediate: true })
 

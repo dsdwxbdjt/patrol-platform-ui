@@ -58,6 +58,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SecondForm: typeof import('./../components/GenCron/CronForm/component/second-form.vue')['default']
     SplitPanel: typeof import('./../components/SplitPanel/index.vue')['default']
+    StationSelect: typeof import('./../components/StationSelect/index.vue')['default']
     TextCopy: typeof import('./../components/TextCopy/index.vue')['default']
     UserSelect: typeof import('./../components/UserSelect/index.vue')['default']
     Verify: typeof import('./../components/Verify/index.vue')['default']

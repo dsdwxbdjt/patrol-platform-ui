@@ -13,7 +13,7 @@ export const systemRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    name: 'Station',
+    name: 'StationRoot',
     component: Layout,
     redirect: '/station',
     meta: { title: '站点信息管理', icon: 'dashboard', hidden: false },

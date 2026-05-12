@@ -24,8 +24,9 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
     try {
       loading.value = true
       const res = await api({ page: pagination.current, size: pagination.pageSize })
-      const data = !Array.isArray(res.data) ? res.data.list : res.data
-      tableData.value = formatResult ? formatResult(data) : data
+      const raw = res.data as any
+      const data = formatResult ? formatResult(raw) : (!Array.isArray(raw) ? raw.list : raw)
+      tableData.value = data
       const total = !Array.isArray(res.data) ? res.data.total : data.length
       setTotal(total)
       onSuccess && onSuccess()

@@ -55,3 +55,8 @@ export function getStationDetail(id: string) {
   return http.get(`${BASE_URL}/${id}`)
 }
 
+/** @desc 获取站点关联人员 */
+export function getStationUserList(id: string, query?: any) {
+  return http.get(`${BASE_URL}/user-list/${id}`, query)
+}
+

@@ -22,8 +22,10 @@
 
 <script lang="ts" setup>
 import { useTable, useResetReactive } from '@/hooks'
-import { getUserList } from '@/apis'
+import { getStationUserList } from '@/apis'
 const [queryForm, resetForm] = useResetReactive({})
+
+const route = useRoute()
 
 const genderDict = [
   {
@@ -71,8 +73,13 @@ const columns = [
   { title: '在线状态', dataIndex: 'status', slotName: 'status',width: 100, align:'center' },
 ]
 
+const { tableData: dataList, loading, pagination, search } = useTable((page) => getStationUserList(route.params.id as string, { ...queryForm, ...page }), { 
+  immediate: true,
+  formatResult: (data: any) => {
+    return data.users || []
+  }
+})
 
-const { tableData: dataList, loading, pagination, search, handleDelete } = useTable((page) => getUserList({ ...queryForm, ...page }), { immediate: true })
 
 </script>
 

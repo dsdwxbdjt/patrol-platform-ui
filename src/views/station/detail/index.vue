@@ -22,7 +22,7 @@
       <div class="tab-section">
         <a-tabs v-model:activeKey="activeTab">
           <a-tab-pane key="1" title="站点人员">
-            <UseInfo />
+            <UseInfo :formData="detailData" />
           </a-tab-pane>
         </a-tabs>
       </div>
