@@ -47,6 +47,20 @@ export const systemRoutes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/ai',
+    name: 'Ai',
+    component: Layout,
+    meta: { title: 'AI探访工作台', icon: 'dashboard', hidden: false },
+    children: [
+      {
+        path: '/ai',
+        name: 'Ai',
+        component: () => import('@/views/ai/index.vue'),
+        meta: { title: 'AI探访工作台', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
     path: '/social/callback',
     component: () => import('@/views/login/social/index.vue'),
     meta: { hidden: true },
