@@ -1,6 +1,6 @@
 <template>
   <a-modal 
-    title="新增站点" 
+    :title 
     :visible.sync="visible" 
     :width="600" 
     :confirm-loading="isSubmitting"
@@ -13,13 +13,19 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { addStation, getStationDetail, editStation } from '@/apis/station/station-info'
+import { getRegionTree } from '@/apis'
+
 
 defineOptions({ name: 'StationInfoModal' })
 
 const editId = ref(null)
+const title = ref('新增站点')
+const regionTree = ref<any[]>([])
 const onOpen = async (data? :any) => {
+  await getRegionTreeData()
   if (data?.id) {
     editId.value = data.id
+    title.value = '编辑站点'
     const detail = await getStationDetail(data.id)
     if (detail?.success) {
       form.value = detail.data
@@ -59,11 +65,21 @@ const form = ref({})
 const columns: any[] = reactive([
   { type: 'select',label: '所属公司', field: 'company', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择所属公司', options: companyDict } },
   { type: 'input', label: '站点名称', field: 'name', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入站点名称' } },
-  { type: 'input', label: '所属区域', field: 'district', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入所属区域' } },
-  { type: 'input', label: '街道', field: 'street', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入街道' } },
   { type: 'input', label: '详细地址', field: 'address', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入详细地址' } },
   { type: 'input', label: '负责人姓名', field: 'managerName', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入负责人姓名' } },
   { type: 'input', label: '负责人电话', field: 'managerPhone', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入负责人电话' } },
+  { type: 'tree-select', label: '所属区域', field: 'districtId', span: { xs: 24, sm: 12, xxl: 12 }, 
+    props: { 
+      placeholder: '请选择所属区域',
+      data: regionTree,
+      defaultExpandedKeys: ["3301"],
+      fieldNames: { key: 'id',title: 'name',children: 'children' },
+      allowSearch: true,
+      filterTreeNode: (searchValue, nodeData) => {
+        return nodeData.name?.includes(searchValue)
+      }
+    }
+  },
 ])
 
 async function handleSubmit() {
@@ -81,6 +97,14 @@ async function handleSubmit() {
   } finally { 
     isSubmitting.value = false
   }
+}
+
+async function getRegionTreeData() {
+  const res = await getRegionTree()
+  if (res?.success) {
+    regionTree.value = res.data || []
+  }
+  return []
 }
 
 function close() {

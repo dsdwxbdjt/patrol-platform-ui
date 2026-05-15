@@ -1,7 +1,7 @@
 <template>
   <GiPageLayout>
     <template #left>
-      <RegionTree />
+      <RegionTree @select="selectRegion" />
     </template>
     <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading" :scroll="{ x: '100%', y: '100%', minWidth: 1800 }" :pagination="pagination" :disabled-tools="['size']" @refresh="search">
       <template #toolbar-left>
@@ -78,14 +78,18 @@ const columns: TableInstance['columns'] = [
     fixed: 'left',
   },
   { title: '站点名称', dataIndex: 'name', width: 150, ellipsis: true, tooltip: true, fixed: 'left' },
-  { title: '区县', dataIndex: 'district', width: 100 },
-  { title: '街道', dataIndex: 'street', width: 100 },
+  { title: '所属区域', dataIndex: 'district', width: 100 },
   { title: '站长姓名', dataIndex: 'managerName', width: 100 },
   { title: '站长电话', dataIndex: 'managerPhone', width: 130 },
   { title: '详细地址', dataIndex: 'address', width: 150, ellipsis: true, tooltip: true },
   { title: '状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center' },
   { title: '操作', dataIndex: 'operation', slotName: 'operation', width: 100, align: 'center' },
 ]
+
+const selectRegion = (keys: Array<any>) => {
+  queryForm.districtId = keys[0]
+  search()
+}
 
 const onAdd = () => {
   stationInfoModalRef.value?.onOpen()

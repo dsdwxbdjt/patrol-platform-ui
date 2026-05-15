@@ -21,7 +21,7 @@
         <IconHome v-else style="color: #15C105FF;" />
       </template>
       <template #extra="node">
-        <span style="margin-right: 10px;">{{ 100 }}</span>
+        <span style="margin-right: 10px;">{{ node.totalSiteCount }}</span>
       </template>
     </a-tree>
   </div>
@@ -32,17 +32,16 @@ import { getRegionTree } from '@/apis'
 import { ref, onMounted } from 'vue'
 
 const treeData = ref<any[]>([])
-
-
+const emit = defineEmits(['select'])
 const selectedKeys = ref()
 const select = (keys: Array<any>) => {
   selectedKeys.value = keys
+  emit('select', keys)
 }
 
 
 onMounted(() => {
   getRegionTree().then((res: any) => {
-    console.log(res);
     treeData.value = res.data || []
   })
 })
