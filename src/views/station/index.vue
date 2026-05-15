@@ -1,7 +1,7 @@
 <template>
   <GiPageLayout>
     <template #left>
-      <RegionTree @select="selectRegion" />
+      <RegionTree ref="regionTreeRef" @select="selectRegion" />
     </template>
     <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading" :scroll="{ x: '100%', y: '100%', minWidth: 1800 }" :pagination="pagination" :disabled-tools="['size']" @refresh="search">
       <template #toolbar-left>
@@ -30,7 +30,7 @@
         <a-link @click="onDelete(record)" status="danger">删除</a-link>
       </template>
     </GiTable>
-    <StationInfoModal ref="stationInfoModalRef" @submitted="search" />
+    <StationInfoModal ref="stationInfoModalRef" @submitted="submitted" />
   </GiPageLayout>
 </template>
 
@@ -45,6 +45,7 @@ import RegionTree from './components/RegionTree.vue'
 import StationInfoModal from './components/StationInfoModal.vue'
 const stationInfoModalRef = ref<typeof StationInfoModal>()
 const [queryForm, resetForm] = useResetReactive({})
+const regionTreeRef = ref<typeof RegionTree>()
 const queryFormColumns: ColumnItem[] = reactive([
   {
     type: 'input',
@@ -89,6 +90,11 @@ const columns: TableInstance['columns'] = [
 const selectRegion = (keys: Array<any>) => {
   queryForm.districtId = keys[0]
   search()
+}
+
+const submitted = () => {
+  search()
+  regionTreeRef.value?.getData()
 }
 
 const onAdd = () => {

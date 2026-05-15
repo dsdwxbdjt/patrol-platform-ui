@@ -39,11 +39,18 @@ const select = (keys: Array<any>) => {
   emit('select', keys)
 }
 
-
 onMounted(() => {
+  getData()
+})
+
+const getData = () => {
   getRegionTree().then((res: any) => {
     treeData.value = res.data || []
   })
+}
+
+defineExpose({
+  getData
 })
 </script>
 
@@ -56,4 +63,3 @@ onMounted(() => {
   }
 }
 </style>
-
