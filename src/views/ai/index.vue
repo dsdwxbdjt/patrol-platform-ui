@@ -22,7 +22,11 @@
             :class="item.role === 'user' ? 'is-user' : 'is-assistant'"
           >
             <div class="bubble">
-              <div class="bubble-role">{{ item.role === 'user' ? '你' : 'AI' }}</div>
+              <div class="bubble-role">
+                {{ item.role === 'user' ? '你' : 'AI' }}
+                <a-spin v-if="item.role === 'assistant' && isConnecting && index === messages.length - 1" size="small" class="loading-spin" />
+              </div>
+              <img v-if="item.imageUrl" :src="item.imageUrl" class="bubble-image" />
               <div class="bubble-content">{{ item.content }}</div>
             </div>
           </div>
@@ -36,22 +40,38 @@
           :auto-size="{ minRows: 2, maxRows: 6 }"
           @keydown="onKeydown"
         />
+        <a-upload
+          action="/dev-api/api/file/upload"
+          @change="handleUpload"
+          @success="handleSuccess"
+          :auto-upload="true"
+          :headers="uploadHeaders"
+          :max-count="1"
+        >
+          <a-button type="primary">选择图片</a-button>
+        </a-upload>
       </a-card>
     </div>
   </GiPageLayout>
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, ref, watch, computed } from 'vue'
+import { getToken } from '@/utils/auth'
 
 type ChatRole = 'user' | 'assistant'
-type ChatMessage = { role: ChatRole; content: string; ts: number }
+type ChatMessage = { role: ChatRole; content: string; ts: number; imageUrl?: string }
 
 const question = ref('')
 const messages = ref<ChatMessage[]>([])
 const errorText = ref('')
 const isConnecting = ref(false)
 const chatBodyRef = ref<HTMLElement | null>(null)
+const uploadHeaders = computed(() => {
+  return {
+    'Authorization': 'Bearer ' + localStorage.getItem('token') || ''
+  }
+})
 
 let eventSource: EventSource | null = null
 
@@ -73,10 +93,22 @@ const onStop = () => {
   isConnecting.value = false
 }
 
+const imageUrl = ref('')
+
+const handleUpload = async (_: any, currentFile: any) => {
+
+}
+
+const handleSuccess = (res: any) => {
+  console.log(res.response.data.url);
+  imageUrl.value = res.response.data.url
+}
+
 const onClear = () => {
   onStop()
   messages.value = []
   errorText.value = ''
+  imageUrl.value = ''
 }
 
 const onKeydown = (e: KeyboardEvent) => {
@@ -88,35 +120,70 @@ const onKeydown = (e: KeyboardEvent) => {
 
 const send = () => {
   const content = question.value.trim()
-  if (!content) return
+  if (!content && !imageUrl.value) return
 
   errorText.value = ''
   onStop()
 
-  const userMsg: ChatMessage = { role: 'user', content, ts: Date.now() }
+  const userMsg: ChatMessage = { role: 'user', content, ts: Date.now(), imageUrl: imageUrl.value }
   const assistantMsg: ChatMessage = { role: 'assistant', content: '', ts: Date.now() + 1 }
   messages.value = [...messages.value, userMsg, assistantMsg]
   question.value = ''
+  const sentImageUrl = imageUrl.value
+  imageUrl.value = ''
 
   isConnecting.value = true
-  eventSource = new EventSource(`/dev-api/api/ai/chat?message=${encodeURIComponent(content)}`)
-
-  eventSource.onmessage = (event) => {
-    try {
-      const payload = JSON.parse(event.data)
-      const delta = String(payload?.data?.content ?? '')
-      if (!delta) return
-      assistantMsg.content += delta
-      messages.value = [...messages.value.slice(0, -1), assistantMsg]
-    } catch {
-      errorText.value = '响应解析失败'
-    }
+  const token = getToken()
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token,
   }
 
-  eventSource.onerror = () => {
-    errorText.value = '连接异常或已断开'
-    onStop()
-  }
+  // 用 fetch 实现 SSE，支持自定义请求头
+  fetch('/dev-api/api/ai/chat', {
+    method: 'POST',
+    body: JSON.stringify({
+    message: content,
+    imageUrl: sentImageUrl,
+    history: messages.value
+      .filter(item => item.content)
+      .slice(-5)
+      .map(item => ({
+        role: item.role,
+        content: item.content,
+      })),
+    }),
+    headers: headers,
+  })
+    .then((response) => {
+      const reader = response.body?.getReader()
+      if (!reader) throw new Error('流不存在')
+
+      const decoder = new TextDecoder()
+      const read = async () => {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          const text = decoder.decode(value, { stream: true })
+          assistantMsg.content += text
+          messages.value = [
+            ...messages.value.slice(0, -1),
+            assistantMsg,
+          ]
+        }
+
+        isConnecting.value = false
+      }
+
+      read().catch(() => {
+        errorText.value = '连接异常'
+        isConnecting.value = false
+      })
+    })
+    .catch(() => {
+      errorText.value = '请求失败'
+      isConnecting.value = false
+    })
 }
 
 onBeforeUnmount(() => onStop())
@@ -186,6 +253,20 @@ onBeforeUnmount(() => onStop())
   font-size: 12px;
   color: var(--color-text-3);
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loading-spin {
+  margin-left: 4px;
+}
+
+.bubble-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 6px;
+  margin-bottom: 8px;
 }
 
 .bubble-content {

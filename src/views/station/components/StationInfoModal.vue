@@ -68,6 +68,8 @@ const columns: any[] = reactive([
   { type: 'input', label: '详细地址', field: 'address', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入详细地址' } },
   { type: 'input', label: '负责人姓名', field: 'managerName', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入负责人姓名' } },
   { type: 'input', label: '负责人电话', field: 'managerPhone', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入负责人电话' } },
+  { type: 'input-number', label: '经度', field: 'lng', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入经度' } },
+  { type: 'input-number', label: '纬度', field: 'lat', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入纬度' } },
   { type: 'tree-select', label: '所属区域', field: 'districtId', span: { xs: 24, sm: 12, xxl: 12 }, 
     props: { 
       placeholder: '请选择所属区域',
