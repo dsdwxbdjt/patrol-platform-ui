@@ -18,7 +18,7 @@
       </template>
       <template #operation="{ record }">
         <StationSelect v-if="record.stations.length === 0" @select-station="(val) => selectStation(val, record)"  buttonName="绑定站点" modelType="link" />
-        <a-link v-else @click="unBindStation(record)">解绑站点</a-link>
+        <a-link style="color: #F25C28;" v-else @click="unBindStation(record)">解绑站点</a-link>
         <a-link @click="editUser(record)">编辑</a-link>
       </template>
       <template #stationName="{ record }">

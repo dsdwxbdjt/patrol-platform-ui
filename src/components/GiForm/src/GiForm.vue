@@ -50,6 +50,7 @@
         </a-grid-item>
       </template>
       <a-grid-item
+        style="display: flex; justify-content: end;"
         v-if="props.search" :key="!props.suffix ? String(collapsed) : undefined"
         v-bind="defaultGridItemProps" :span="defaultGridItemProps?.span"
         :suffix="props.search && (props.suffix || (!props.suffix && collapsed))"
@@ -63,16 +64,6 @@
             <a-button @click="emit('reset')">
               <template #icon><icon-refresh /></template>
               <template #default>重置</template>
-            </a-button>
-            <a-button
-              v-if="!props.hideFoldBtn" class="gi-form__fold-btn" type="text" size="mini"
-              @click="collapsed = !collapsed"
-            >
-              <template #icon>
-                <icon-up v-if="!collapsed" />
-                <icon-down v-else />
-              </template>
-              <template #default>{{ collapsed ? '展开' : '收起' }}</template>
             </a-button>
           </slot>
         </a-space>
@@ -114,7 +105,7 @@ const props = withDefaults(defineProps<Props>(), {
   scrollToFirstError: true,
   defaultCollapsed: false,
   search: false,
-  gridItemProps: { span: { xs: 24, sm: 8, xxl: 8 } },
+  gridItemProps: { span: { xs: 24, sm: 6, xxl: 4 } },
   searchBtnText: '搜索',
   hideFoldBtn: false,
   suffix: true,

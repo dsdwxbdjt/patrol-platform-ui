@@ -7,7 +7,7 @@
         </slot>
       </a-space>
     </a-row>
-    <a-row>
+    <a-row v-if="slots.top" style="margin-bottom: 12px;border-bottom: 1px solid var(--color-border);padding-bottom: 12px;">
       <slot name="top"></slot>
     </a-row>
     <a-row justify="space-between" align="center" class="gi-table__toolbar">

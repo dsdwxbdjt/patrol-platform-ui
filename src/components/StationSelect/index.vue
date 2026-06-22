@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%">
+  <div :style="modelType === 'link' ? 'display: inline-block' : 'width: 100%'">
     <a-input
       v-if="modelType === 'input'"
       v-model:value="inputDisplay"
@@ -16,7 +16,6 @@
 
     <a-link
       v-else-if="modelType === 'link'"
-      type="text"
       :disabled="isDisabled"
       @click="visible = true"
     >

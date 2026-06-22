@@ -61,6 +61,20 @@ export const systemRoutes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/order',
+    name: 'Order',
+    component: Layout,
+    meta: { title: '工单管理', icon: 'dashboard', hidden: false },
+    children: [
+      {
+        path: '/order',
+        name: 'Order',
+        component: () => import('@/views/order/index.vue'),
+        meta: { title: '工单管理', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
     path: '/social/callback',
     component: () => import('@/views/login/social/index.vue'),
     meta: { hidden: true },

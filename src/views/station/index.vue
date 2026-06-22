@@ -51,7 +51,7 @@ const queryFormColumns: ColumnItem[] = reactive([
     type: 'input',
     label: '站点名称',
     field: 'name',
-    span: { xs: 24, sm: 6, xxl: 8 },
+    span: { xs: 24, sm: 6, xxl: 6 },
     props: {
       placeholder: '请输入站点名称',
     },
@@ -60,7 +60,7 @@ const queryFormColumns: ColumnItem[] = reactive([
     type: 'select',
     label: '站点状态',
     field: 'status',
-    span: { xs: 24, sm: 6, xxl: 8 },
+    span: { xs: 24, sm: 6, xxl: 6 },
     props: {
       options: DisEnableStatusList,
       placeholder: '请选择状态',
