@@ -13,7 +13,7 @@
           <a-descriptions-item label="骑手数量">{{ detailData.riderCount ?? '-' }}</a-descriptions-item>
           <a-descriptions-item label="在线骑手数量">{{ detailData.onlineRiderCount ?? '-' }}</a-descriptions-item>
           <a-descriptions-item label="日单量">{{ detailData.dailyOrderCount ?? '-' }}</a-descriptions-item>
-          <a-descriptions-item label="电池站数量">{{ detailData.batteryStationNum ?? '-' }}</a-descriptions-item>
+          <a-descriptions-item label="电池站数量">{{ detailData.batteryStationNum ?? 0 }}</a-descriptions-item>
           <a-descriptions-item label="状态">
             <GiCellStatus :status="detailData.status" />
           </a-descriptions-item>

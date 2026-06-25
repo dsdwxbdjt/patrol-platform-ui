@@ -75,6 +75,34 @@ export const systemRoutes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/battery',
+    name: 'Battery',
+    component: Layout,
+    meta: { title: '电池管理', icon: 'dashboard', hidden: false },
+    children: [
+      {
+        path: '/battery',
+        name: 'Battery',
+        component: () => import('@/views/battery/index.vue'),
+        meta: { title: '电池管理', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
+    path: '/battery-detail/:id',
+    name: 'BatteryDetail',
+    component: Layout,
+    meta: { title: '电池详情', icon: 'dashboard', hidden: true },
+    children: [
+      {
+        path: '/battery-detail/:id',
+        name: 'BatteryDetail',
+        component: () => import('@/views/battery/detail/index.vue'),
+        meta: { title: '电池详情', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
     path: '/social/callback',
     component: () => import('@/views/login/social/index.vue'),
     meta: { hidden: true },

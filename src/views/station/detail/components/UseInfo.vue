@@ -73,14 +73,7 @@ const columns = [
   { title: '在线状态', dataIndex: 'status', slotName: 'status',width: 100, align:'center' },
 ]
 
-const { tableData: dataList, loading, pagination, search } = useTable((page) => getStationUserList(route.params.id as string, { ...queryForm, ...page }), { 
-  immediate: true,
-  formatResult: (data: any) => {
-    return data.users || []
-  }
-})
-
-
+const { tableData: dataList, loading, pagination, search } = useTable((page) => getStationUserList(route.params.id as string, { ...queryForm, ...page }), { immediate: true })
 </script>
 
 <style lang="scss" scoped>
