@@ -89,6 +89,20 @@ export const systemRoutes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/dict',
+    name: 'Dict',
+    component: Layout,
+    meta: { title: '字典管理', icon: 'dashboard', hidden: false },
+    children: [
+      {
+        path: '/dict',
+        name: 'Dict',
+        component: () => import('@/views/dict/index.vue'),
+        meta: { title: '字典管理', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
     path: '/battery-detail/:id',
     name: 'BatteryDetail',
     component: Layout,

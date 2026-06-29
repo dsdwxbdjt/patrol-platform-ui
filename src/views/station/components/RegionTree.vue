@@ -1,5 +1,5 @@
 <template>
-  <div class="left-wrap">
+  <div class="tree-wrap">
     <div class="search">
       <a-input placeholder="搜索区域名称" allow-clear>
         <template #prefix><icon-search /></template>
@@ -55,7 +55,7 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-.left-wrap{
+.tree-wrap{
   height: 100%;
   overflow: auto;
  .search{

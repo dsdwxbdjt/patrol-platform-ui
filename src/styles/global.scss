@@ -600,3 +600,45 @@
     border-radius: 0 4px 4px 0;
   }
 }
+
+.arco-tree-node-selected {
+  font-weight: bold;
+  background-color: rgba(var(--primary-6), 0.1);
+  &:hover {
+    background-color: rgba(var(--primary-6), 0.1);
+  }
+  .arco-typography {
+    color: rgb(var(--primary-6));
+  }
+  .action {
+    opacity: 1;
+  }
+}
+
+.arco-tree-node {
+  line-height: normal;
+  border-radius: var(--border-radius-medium);
+  margin: 5px 0;
+  .action {
+    opacity: 0;
+    margin-right: 8px;
+    padding: 4px;
+    transition: all 0.25s;
+    border-radius: 8px;
+
+    &:hover{
+      background-color: var(--color-bg-1);
+    }
+  }
+  &:hover {
+    background-color: var(--color-secondary-hover);
+    .action {
+      opacity: 1;
+    }
+  }
+  .arco-tree-node-title {
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}

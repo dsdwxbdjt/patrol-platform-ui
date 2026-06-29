@@ -50,12 +50,12 @@ export function addDictItem(data: any) {
   return http.post(`${BASE_URL}/item`, data)
 }
 
-/** @desc 修改字典项 */
-export function updateDictItem(data: any, id: string) {
-  return http.put(`${BASE_URL}/item/${id}`, data)
-}
+// /** @desc 修改字典项 */
+// export function updateDictItem(data: any, id: string) {
+//   return http.put(`${BASE_URL}/item/${id}`, data)
+// }
 
-/** @desc 删除字典项 */
-export function deleteDictItem(id: string) {
-  return http.del(`${BASE_URL}/item`, { ids: [id] })
-}
+// /** @desc 删除字典项 */
+// export function deleteDictItem(id: string) {
+//   return http.del(`${BASE_URL}/item`, { ids: [id] })
+// }
