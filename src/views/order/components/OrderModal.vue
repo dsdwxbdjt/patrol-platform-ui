@@ -15,6 +15,9 @@ import { ref, reactive } from 'vue'
 import { addOrder, getOrderDetail, editOrder } from '@/apis/order/order-info'
 import { stationList } from '@/apis/station/station-info'
 import { getUserList } from '@/apis/user/user-list'
+import { useDict } from '@/hooks/app/useDict'
+
+
 
 defineOptions({ name: 'OrderModal' })
 
@@ -23,18 +26,7 @@ const title = ref('新增工单')
 const stationOptions = ref<any[]>([])
 const inspectorOptions = ref<any[]>([])
 
-const statusOptions = [
-  { label: '待处理', value: 0 },
-  { label: '处理中', value: 1 },
-  { label: '已完成', value: 2 },
-  { label: '已关闭', value: 3 },
-]
-
-const levelOptions = [
-  { label: '一般', value: 1 },
-  { label: '严重', value: 2 },
-  { label: '危机', value: 3 },
-]
+const { status_options, level_option } = useDict('status_options', 'level_option')
 
 const onOpen = async (data?: any) => {
   await getStationList()
@@ -61,8 +53,8 @@ const columns: any[] = reactive([
   { type: 'select', label: '所属站点', field: 'stationId', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择所属站点', options: stationOptions } },
   { type: 'select', label: '巡检人员', field: 'inspectorId', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择巡检人员', options: inspectorOptions } },
   { type: 'date-picker', label: '巡检时间', field: 'inspectionTime', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择巡检时间', showTime: true } },
-  { type: 'select', label: '工单状态', field: 'status', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择工单状态', options: statusOptions } },
-  { type: 'select', label: '隐患类别', field: 'level', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择隐患类别', options: levelOptions } },
+  { type: 'select', label: '工单状态', field: 'status', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择工单状态', options: status_options } },
+  { type: 'select', label: '隐患类别', field: 'level', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择隐患类别', options: level_option } },
   { type: 'input', label: '问题照片', field: 'problemPhoto', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入问题照片URL' } },
 ])
 

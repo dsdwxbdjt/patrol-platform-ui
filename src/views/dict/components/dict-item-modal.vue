@@ -32,11 +32,11 @@ const form = ref<any>({
   tags: ''
 })
 const dictTagOptions = [
-  { label: '普通', value: 'blue' },
-  { label: '成功', value: 'green' },
-  { label: '失败', value: 'red' },
-  { label: '警告', value: 'orangered' },
-  { label: '信息', value: 'gray' },
+  { label: '普通', value: 'primary' },
+  { label: '成功', value: 'success' },
+  { label: '失败', value: 'error' },
+  { label: '警告', value: 'warning' },
+  { label: '信息', value: 'default' },
 ]
 const columns = reactive<any[]>([
   {
@@ -62,7 +62,7 @@ const columns = reactive<any[]>([
   {
     type: 'select',
     label: '标签',
-    field: 'tag',
+    field: 'extra',
     span: { xs: 24, sm: 24, xxl: 24 },
     props: {
       placeholder: '请选择标签',

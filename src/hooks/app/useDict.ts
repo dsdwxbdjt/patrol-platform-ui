@@ -1,43 +1,53 @@
-import { ref, toRefs } from 'vue'
-import { listCommonDict } from '@/apis/system'
-import { useDictStore } from '@/stores'
+import { ref, onMounted, type Ref } from 'vue'
+import { getDictTypeList, getDictItemList } from '@/apis'
 
-const pendingRequests = new Map<string, Promise<any>>()
+interface DictOption {
+  label: string
+  value: string
+  tag?: string
+}
 
-export function useDict(...codes: string[]) {
-  const dictStore = useDictStore()
-  const dictData = ref<Record<string, App.DictItem[]>>({})
+type DictRecord<T extends readonly string[]> = {
+  [K in T[number]]: Ref<DictOption[]>
+}
 
-  codes.forEach(async (code) => {
-    dictData.value[code] = []
+export function useDict<T extends string>(...codes: T[]) {
+  const dictRefs = {} as DictRecord<typeof codes>
+  const loading = ref(false)
 
-    const cached = dictStore.getDict(code)
-    if (cached) {
-      dictData.value[code] = cached
-      return
-    }
-
-    if (!pendingRequests.has(code)) {
-      const request = listCommonDict(code)
-        .then(({ data }) => {
-          dictStore.setDict(code, data)
-          return data
-        })
-        .catch((error) => {
-          console.error(`Failed to load dict: ${code}`, error)
-          return []
-        })
-        .finally(() => {
-          pendingRequests.delete(code)
-        })
-
-      pendingRequests.set(code, request)
-    }
-
-    pendingRequests.get(code)!.then((data) => {
-      dictData.value[code] = data
-    })
+  codes.forEach(code => {
+    dictRefs[code as T] = ref<DictOption[]>([]) as Ref<DictOption[]>
   })
 
-  return toRefs(dictData.value)
+  const fetchDict = async () => {
+    try {
+      loading.value = true
+      for (const code of codes) {
+        const dict = await getDictTypeList({ code })
+        const dictItem = await getDictItemList(dict.data[0].id || '')
+        if (dictRefs[code as T]) {
+          dictRefs[code as T].value = dictItem.data.map((item: any) => ({
+            label: item.label,
+            value: item.value,
+            extra: item.extra,
+          }))
+        }
+      }
+    } finally {
+      loading.value = false
+    }
+  }
+
+  onMounted(() => {
+    fetchDict()
+  })
+
+  return {
+    ...dictRefs,
+    loading,
+    refresh: fetchDict,
+  } as typeof dictRefs & {
+    loading: typeof loading
+    refresh: typeof fetchDict
+  }
 }

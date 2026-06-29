@@ -11,7 +11,7 @@
         </a-button>
       </template>
       <template #tag="{ record }">
-        <a-tag :color="record.tag">{{ record.label }}</a-tag>
+        <GiCellTag :value="record.extra" :dict="dictTagOptions" />
       </template>
       <template #operation="{ record }">
         <a-link type="primary" size="small" @click="handleEdit(record)">编辑</a-link>
@@ -29,6 +29,13 @@ import { useTable } from '@/hooks'
 import { getDictItemList, deleteDictItem } from '@/apis'
 
 const dictItemModalRef = ref()
+const dictTagOptions = [
+  { label: '普通', value: 'primary', extra: 'primary' },
+  { label: '成功', value: 'success', extra: 'success' },
+  { label: '失败', value: 'error', extra: 'error' },
+  { label: '警告', value: 'warning', extra: 'warning' },
+  { label: '信息', value: 'default', extra: 'default' }, 
+]
 const columns = [
   {
     title: '序号',
@@ -38,7 +45,7 @@ const columns = [
     fixed: 'left',
   },
   { title: '字典名称', dataIndex: 'label', width: 150 },
-  { title: '字典内容', dataIndex: 'value', width: 100, align:'center' },
+  { title: '字典值', dataIndex: 'value', width: 100, align:'center' },
   { title: '备注', dataIndex: 'remark', width: 100, ellipsis: true, tooltip: true },
   { title: '标签', dataIndex: 'tag', width: 130, align: 'center',slotName: 'tag' },
   { title: '创建时间', dataIndex: 'createdAt', width: 150, ellipsis: true, tooltip: true },

@@ -24,6 +24,11 @@ export type DictItemUploadInput = {
   tag?: string;
 }
 
+export type DictTypeQueryInput = {
+  name?: string,
+  code?: string
+}
+
 export function createDictType(input: DictTypeCreateInput) {
   return http.post<DictTypeCreateInput>(`${BASE_URL}/type`, input)
 }
@@ -36,8 +41,8 @@ export function updateDictType(data: DictTypeCreateInput, id: string) {
   return http.put<DictTypeCreateInput>(`${BASE_URL}/type/${id}`, data)
 }
 
-export function getDictTypeList() {
-  return http.get<DictTypeCreateInput[]>(`${BASE_URL}/type-list`)
+export function getDictTypeList(query?: DictTypeQueryInput) {
+  return http.get<DictTypeCreateInput[]>(`${BASE_URL}/type-list`, query)
 }
 
 export function getDictTypeDetail(id: string) {
