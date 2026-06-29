@@ -62,7 +62,7 @@ const columns = reactive<any[]>([
   {
     type: 'select',
     label: '标签',
-    field: 'tags',
+    field: 'tag',
     span: { xs: 24, sm: 24, xxl: 24 },
     props: {
       placeholder: '请选择标签',

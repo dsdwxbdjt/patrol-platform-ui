@@ -11,7 +11,7 @@
         </a-button>
       </template>
       <template #tag="{ record }">
-        {{ record.tag }}
+        <a-tag :color="record.tag">{{ record.label }}</a-tag>
       </template>
       <template #operation="{ record }">
         <a-link type="primary" size="small" @click="handleEdit(record)">编辑</a-link>
@@ -38,8 +38,8 @@ const columns = [
     fixed: 'left',
   },
   { title: '字典名称', dataIndex: 'label', width: 150 },
-  { title: '字典内容', dataIndex: 'value', width: 100 },
-  { title: '备注', dataIndex: 'remark', width: 100 },
+  { title: '字典内容', dataIndex: 'value', width: 100, align:'center' },
+  { title: '备注', dataIndex: 'remark', width: 100, ellipsis: true, tooltip: true },
   { title: '标签', dataIndex: 'tag', width: 130, align: 'center',slotName: 'tag' },
   { title: '创建时间', dataIndex: 'createdAt', width: 150, ellipsis: true, tooltip: true },
   { title: '操作', dataIndex: 'operation', slotName: 'operation', width: 100, align: 'center', fixed: 'right' },

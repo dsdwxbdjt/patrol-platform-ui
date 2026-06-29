@@ -47,20 +47,6 @@ export const systemRoutes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/ai',
-    name: 'Ai',
-    component: Layout,
-    meta: { title: 'AI探访工作台', icon: 'dashboard', hidden: false },
-    children: [
-      {
-        path: '/ai',
-        name: 'Ai',
-        component: () => import('@/views/ai/index.vue'),
-        meta: { title: 'AI探访工作台', icon: 'desktop', hidden: false, affix: true },
-      },
-    ],
-  },
-  {
     path: '/order',
     name: 'Order',
     component: Layout,
@@ -113,6 +99,20 @@ export const systemRoutes: RouteRecordRaw[] = [
         name: 'BatteryDetail',
         component: () => import('@/views/battery/detail/index.vue'),
         meta: { title: '电池详情', icon: 'desktop', hidden: false, affix: true },
+      },
+    ],
+  },
+  {
+    path: '/ai',
+    name: 'Ai',
+    component: Layout,
+    meta: { title: 'Agent调试器', icon: 'dashboard', hidden: false },
+    children: [
+      {
+        path: '/ai',
+        name: 'Ai',
+        component: () => import('@/views/ai/index.vue'),
+        meta: { title: 'Agent调试器', icon: 'desktop', hidden: false, affix: true },
       },
     ],
   },

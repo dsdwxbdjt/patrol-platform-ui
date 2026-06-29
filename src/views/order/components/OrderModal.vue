@@ -32,8 +32,8 @@ const statusOptions = [
 
 const levelOptions = [
   { label: '一般', value: 1 },
-  { label: '重要', value: 2 },
-  { label: '紧急', value: 3 },
+  { label: '严重', value: 2 },
+  { label: '危机', value: 3 },
 ]
 
 const onOpen = async (data?: any) => {
@@ -62,7 +62,7 @@ const columns: any[] = reactive([
   { type: 'select', label: '巡检人员', field: 'inspectorId', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择巡检人员', options: inspectorOptions } },
   { type: 'date-picker', label: '巡检时间', field: 'inspectionTime', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择巡检时间', showTime: true } },
   { type: 'select', label: '工单状态', field: 'status', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择工单状态', options: statusOptions } },
-  { type: 'select', label: '紧急程度', field: 'level', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择紧急程度', options: levelOptions } },
+  { type: 'select', label: '隐患类别', field: 'level', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择隐患类别', options: levelOptions } },
   { type: 'input', label: '问题照片', field: 'problemPhoto', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入问题照片URL' } },
 ])
 
