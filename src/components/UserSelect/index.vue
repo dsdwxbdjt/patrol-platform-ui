@@ -1,262 +1,393 @@
 <template>
-  <div class="container">
-    <a-row :gutter="16">
-      <a-col :span="24" :md="17">
-        <GiTable
-          v-model:selectedKeys="selectedKeys"
-          row-key="id"
-          :data="dataList"
-          :columns="listColumns"
-          :loading="loading"
-          :scroll="{ x: '100%', y: '100%', minWidth: 500 }"
-          style="max-height: 600px"
-          :pagination="pagination"
-          :disabled-tools="['size', 'fullscreen', 'setting', 'refresh']"
-          :row-selection="{ type: props.multiple ? 'checkbox' : 'radio', showCheckedAll: true }"
-          @select="onSelect"
-          @select-all="onSelectAll"
-          @refresh="search"
-        >
-          <template #top>
-            <a-space wrap :size="[8, 8]">
-              <a-input-search v-model="queryForm.description" placeholder="搜索用户名/昵称/描述" allow-clear @search="search" />
-              <a-tree-select
-                v-model="queryForm.deptId"
-                :data="deptList"
-                placeholder="请选择所属部门"
-                allow-clear
-                allow-search
-                :filter-tree-node="filterDeptOptions"
-                @change="search"
-              />
-              <a-button @click="reset">
-                <template #icon>
-                  <icon-refresh />
-                </template>
-                <template #default>重置</template>
-              </a-button>
-            </a-space>
-            <a-alert>
-              <template v-if="selectedKeys.length > 0">
-                已选中 {{ selectedKeys.length }} 条记录(可跨页)
-              </template>
-              <template v-else>未选中任何记录</template>
-              <template v-if="selectedKeys.length > 0" #action>
-                <a-link @click="onClearSelected">清空</a-link>
-              </template>
-            </a-alert>
-          </template>
+  <div :style="modelType === 'link' ? 'display: inline-block' : 'width: 100%'">
+    <a-input
+      v-if="modelType === 'input'"
+      v-model:value="inputDisplay"
+      v-model="inputDisplay"
+      placeholder="请选择人员"
+      readonly
+      style="width: 100%"
+      @click="visible = true"
+    >
+      <template #suffix>
+        <icon-search />
+      </template>
+    </a-input>
 
-          <template #gender="{ record }">
-            <GiCellGender :gender="record.gender" />
-          </template>
-          <template #status="{ record }">
-            <GiCellStatus :status="record.status" />
-          </template>
-        </GiTable>
-      </a-col>
-      <a-col :span="24" :md="7" class="section">
-        <a-card>
-          <template #title>已选择: {{ selectedKeys.length }}</template>
-          <a-table :columns="selectedColumns" :data="[...selectedData.values()]" :pagination="paginationOptions">
-            <template #nickname="{ record }">
-              {{ record.nickname }}({{ record.username }})
-            </template>
-            <template #action="{ record }">
-              <a-button status="danger" size="mini" @click="handleDeleteSelectedUser(record)">
-                <icon-delete />
-              </a-button>
-            </template>
-          </a-table>
-        </a-card>
-      </a-col>
-    </a-row>
+    <a-link
+      v-else-if="modelType === 'link'"
+      :disabled="isDisabled"
+      @click="visible = true"
+    >
+      {{ buttonName }}
+    </a-link>
+    
+    <a-modal
+      v-model:visible="visible"
+      v-if="visible"
+      title="选择人员"
+      width="80%"
+      :footer="false"
+      :mask-closable="true"
+    >
+      <a-row :gutter="[16, 16]">
+        <a-col :xs="24" :sm="16" :md="16" :lg="16" :xl="16">
+          <a-card :bordered="false">
+            <GiTable
+              row-key="id"
+              :data="dataList"
+              :columns="selectColumns"
+              :loading="loading"
+              :scroll="{ x: '100%', y: '100%', minWidth: 700 }"
+              :pagination="pagination"
+              :disabled-tools="['size']"
+              @refresh="search"
+              :top-controls="false"
+            >
+              <template #top>
+                <GiForm
+                  v-model="queryForm"
+                  search
+                  :columns="queryFormColumns"
+                  size="medium"
+                  @search="search"
+                  @reset="reset"
+                />
+              </template>
+              <template #nameHeader>
+                <a-checkbox
+                  v-if="multiple"
+                  v-model="isSelectAll"
+                  @change="chagneSelectAll"
+                  :value="true"
+                ></a-checkbox>
+                <span v-else>选择</span>
+              </template>
+              <template #select="{ record }">
+                <a-radio
+                  v-if="!multiple"
+                  :model-value="isSelected(record)"
+                  @change="toggleSelect(record, true)"
+                />
+                <a-checkbox
+                  v-else
+                  :model-value="isSelected(record)"
+                  @change="toggleSelect(record, $event)"
+                />
+              </template>
+              <template #gender="{ record }">
+                <GiCellTag :value="record.gender" :dict="genderDict" />
+              </template>
+              <template #status="{ record }">
+                <GiCellTag :value="record.status" :dict="isOnlineDict" />
+              </template>
+              <template #role="{ record }">
+                <a-tag style="margin-left: 10px;" v-for="(role, index) in (record.roleNames || [])" :key="index">{{ role }}</a-tag>
+              </template>
+            </GiTable>
+          </a-card>
+        </a-col>
+
+        <a-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+          <a-card :title="`已选择 ${selectedList.length} 条`" :bordered="false">
+            <GiTable
+              row-key="id"
+              :data="selectedList"
+              :columns="selectedColumns"
+              :scroll="{ x: '100%', y: '100%', minWidth: 360 }"
+              :disabled-tools="['size', 'columns', 'refresh']"
+              :pagination="false"
+              :top-controls="false"
+            >
+              <template #gender="{ record }">
+                <GiCellTag :value="record.gender" :dict="genderDict" />
+              </template>
+              <template #status="{ record }">
+                <GiCellTag :value="record.status" :dict="isOnlineDict" />
+              </template>
+              <template #action="{ record }">
+                <a-link status="danger" @click="removeSelected(record)"
+                  >移除</a-link
+                >
+              </template>
+            </GiTable>
+
+            <div style="text-align: right; margin-top: 12px">
+              <a-space>
+                <a-button @click="onClear">清空</a-button>
+                <a-button type="primary" @click="onConfirm">确定</a-button>
+              </a-space>
+            </div>
+          </a-card>
+        </a-col>
+      </a-row>
+    </a-modal>
   </div>
 </template>
 
-<script setup lang="ts">
-import type { TableInstance, TreeNodeData } from '@arco-design/web-vue'
+<script lang="ts" setup>
+import { computed, reactive, ref, watch } from 'vue'
+import type { ColumnItem } from '@/components/GiForm'
+import type { TableInstance } from '@arco-design/web-vue'
+import { useResetReactive, useTable } from '@/hooks'
+import { getUserList } from '@/apis'
 
-import { type UserQuery, type UserResp, listAllUser, listUser } from '@/apis'
-import { type Options, useTable } from '@/hooks'
-import { useDept } from '@/hooks/app'
-import { isMobile } from '@/utils'
-
-const props = withDefaults(defineProps<Props>(), {
-  multiple: true,
-  value: () => [],
-})
+defineOptions({ name: 'UserSelect' })
 
 const emit = defineEmits<{
-  (e: 'select-user', keys: Array<any>): void
+  (e: 'update:value', value: any): void
+  (e: 'select-user', value: any[]): void
+}>()
+const props = defineProps<{
+  multiple?: boolean
+  modelType?: string
+  buttonName?: string
+  isDisabled?: boolean
+  roleId?: string
+  inputUser?: any
 }>()
 
-interface Props {
-  multiple?: boolean
-  value: string | string[]
-  roleId?: string
-}
+const genderDict = [
+  {
+    label: '男',
+    value: 1,
+    extra: 'primary'
+  }, 
+  {
+    label: '女',
+    value: 0,
+    extra: 'warning'
+  },
+  {
+    label: '未知',
+    value: 2,
+    extra: 'default'
+  }
+]
 
-// 查询表单
-const queryForm = reactive<UserQuery>({
-  sort: ['t1.createTime,desc', 't1.id,desc'],
-  roleId: props.roleId,
-})
+const isOnlineDict = [
+  {
+    label: '在线',
+    value: 1,
+    extra: 'primary'
+  }, 
+  {
+    label: '离线',
+    value: 0,
+    extra: 'warning'
+  },
+]
 
-// 用户列表
-const { tableData: dataList, loading, pagination, search } = useTable(
-  (page) => listUser({ ...queryForm, ...page }),
-  { immediate: true, formatResult: (data) => data.map((i) => ({ ...i, id: `${i?.id}`, disabled: false })) },
+const multiple = computed<boolean>(() => props.multiple ?? true)
+const modelType = computed<string>(() => props.modelType ?? 'input')
+const buttonName = computed<string>(() => props.buttonName ?? '选择人员')
+const isDisabled = computed<boolean>(() => props.isDisabled ?? false)
+const inputUser = computed<any>(() => props.inputUser)
+const inputDisplay = ref<string>('')
+const isSelectAll = ref<boolean>(false)
+const visible = ref<boolean>(false)
+
+watch(
+  () => props.inputUser,
+  (newVal) => {
+    if (newVal) {
+      inputDisplay.value = newVal.map((item: any) => item.nickname).join(',')
+    }
+  },
+  { deep: true, immediate: true }
 )
 
-// 表格列定义
-const listColumns: TableInstance['columns'] = [
+type QueryForm = { nickname?: string; status?: number }
+const [queryForm, resetForm] = useResetReactive<QueryForm>({
+  nickname: undefined,
+  status: undefined,
+})
+
+const queryFormColumns: ColumnItem[] = reactive([
   {
-    title: '序号',
-    width: 66,
+    type: 'input',
+    label: '姓名',
+    field: 'nickname',
+    span: { xs: 24, sm: 12, xxl: 8 },
+    props: { placeholder: '请输入姓名' },
+  },
+  {
+    type: 'select',
+    label: '状态',
+    field: 'status',
+    span: { xs: 24, sm: 12, xxl: 8 },
+    props: {
+      options: [
+        { label: '在线', value: 1 },
+        { label: '离线', value: 0 }
+      ],
+      placeholder: '请选择状态',
+      allowClear: true,
+    },
+  },
+])
+
+const {
+  tableData: dataList, loading, pagination, search,
+} = useTable(
+  (page) => getUserList({ ...queryForm, ...page } as any),
+  { immediate: false }
+)
+
+const selectedMap = ref<Record<string, any>>({})
+const selectedList = computed<any[]>(() =>
+  Object.values(selectedMap.value)
+)
+
+const selectColumns: TableInstance['columns'] = [
+  {
+    title: '选择',
+    dataIndex: 'select',
+    slotName: 'select',
+    titleSlotName: 'nameHeader',
+    width: 70,
     align: 'center',
-    render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
-    fixed: !isMobile() ? 'left' : undefined,
+    fixed: 'left',
   },
-  {
-    title: '昵称',
-    dataIndex: 'nickname',
-    slotName: 'nickname',
-    minWidth: 140,
-    ellipsis: true,
-    tooltip: true,
-    fixed: !isMobile() ? 'left' : undefined,
-  },
-  { title: '用户名', dataIndex: 'username', slotName: 'username', minWidth: 140, ellipsis: true, tooltip: true },
-  { title: '状态', slotName: 'status', align: 'center' },
-  { title: '性别', dataIndex: 'gender', slotName: 'gender', align: 'center' },
-  { title: '所属部门', dataIndex: 'deptName', minWidth: 180, ellipsis: true, tooltip: true },
-  { title: '描述', dataIndex: 'description', minWidth: 130, ellipsis: true, tooltip: true },
+  { title: '姓名', dataIndex: 'nickname', width: 100, align: 'center' },
+  { title: '手机号', dataIndex: 'phone', width: 100, align: 'center' },
+  { title: '邮箱', dataIndex: 'email', width: 100, align: 'center' },
+  { title: '性别', dataIndex: 'gender', slotName: 'gender', width: 100, align: 'center' },
+  { title: '角色', dataIndex: 'role', slotName: 'role', width: 100, align: 'center' },
+  { title: '在线状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center', fixed: 'right' },
 ]
 
-// 右侧已选用户列定义
-const selectedColumns = [
-  { title: '用户', dataIndex: 'nickname', slotName: 'nickname', minWidth: 140, ellipsis: true, tooltip: true },
-  { title: '操作', dataIndex: 'action', slotName: 'action', align: 'center', width: 90 },
+const selectedColumns: TableInstance['columns'] = [
+  { title: '姓名', dataIndex: 'nickname', width: 100 },
+  { title: '性别', dataIndex: 'gender', slotName: 'gender', width: 100, align: 'center' },
+  { title: '在线状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center' },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    slotName: 'action',
+    width: 100,
+    align: 'center',
+  },
 ]
-const paginationOptions: Options = {
-  defaultPageSize: 10,
-  defaultSizeOptions: [10, 20, 30, 40, 50],
+
+const isSelected = (record: any): boolean =>
+  !!selectedMap.value[String(record.id)]
+
+const computeIsSelectAll = () => {
+  const list = Array.isArray(dataList.value)
+    ? (dataList.value as any[])
+    : []
+  isSelectAll.value =
+    !!list.length && list.every((rec) => !!selectedMap.value[String(rec.id)])
 }
 
-// 重置
+const toggleSelect = (record: any, checked: boolean) => {
+  const id = String(record.id)
+  if (!id) return
+  if (!multiple.value) {
+    selectedMap.value = checked ? { [id]: record } : {}
+    emitSelected()
+    return
+  }
+  if (checked) selectedMap.value[id] = record
+  else delete selectedMap.value[id]
+  emitSelected()
+  computeIsSelectAll()
+}
+
+const selectAllPage = () => {
+  if (!Array.isArray(dataList.value)) return
+  const map = { ...selectedMap.value }
+  for (const rec of dataList.value as any[]) {
+    const id = String(rec.id)
+    if (id) map[id] = rec
+  }
+  selectedMap.value = map
+  emitSelected()
+  computeIsSelectAll()
+}
+const clearAllPage = () => {
+  if (!Array.isArray(dataList.value)) return
+  const map = { ...selectedMap.value }
+  for (const rec of dataList.value as any[]) {
+    const id = String(rec.id)
+    if (id && map[id]) delete map[id]
+  }
+  selectedMap.value = map
+  emitSelected()
+  computeIsSelectAll()
+}
+
+const removeSelected = (record: any) => {
+  const id = String(record.id)
+  delete selectedMap.value[id]
+  emitSelected()
+  computeIsSelectAll()
+}
+const onClear = () => {
+  selectedMap.value = {}
+  isSelectAll.value = false
+  emitSelected()
+}
+
+const getEmitValue = (): string[] =>
+  selectedList.value.map((u) => String(u.id))
+const emitSelected = () => {
+  
+}
+
+const onConfirm = () => {
+  
+  inputDisplay.value = selectedList.value
+    .map((u) => u.nickname)
+    .join(', ')
+  const value = getEmitValue().join(', ')
+  emit('update:value', value)
+  emit('select-user', selectedList.value)
+  visible.value = false
+}
+const chagneSelectAll = (selectAll: boolean) => {
+  if (selectAll) selectAllPage()
+  else clearAllPage()
+}
 const reset = () => {
-  queryForm.description = undefined
-  queryForm.deptId = undefined
+  resetForm()
   search()
 }
-
-// 选中用户 ID
-const selectedKeys = ref<string[]>([])
-// 选中用户信息
-const selectedData = ref<Map<string, UserResp>>(new Map())
-
-const emitSelectUser = () => {
-  emit('select-user', selectedKeys.value)
-}
-
-// 单选
-const onSelect = (rowKeys: string[], rowKey: string, record: UserResp) => {
-  if (props.multiple) {
-    if (rowKeys.includes(rowKey)) {
-      // 选中时，添加到 Map
-      selectedData.value.set(rowKey, record)
-      selectedKeys.value = Array.from(selectedData.value.keys())
-    } else {
-      // 取消选中时，从 Map 移除
-      selectedData.value.delete(rowKey)
-      selectedKeys.value = Array.from(selectedData.value.keys())
-    }
-  } else {
-    selectedData.value.clear()
-    selectedKeys.value = []
-    if (rowKeys.includes(rowKey)) {
-      selectedData.value.set(rowKey, record)
-      selectedKeys.value = [rowKey]
-    }
-  }
-  emitSelectUser()
-}
-
-// 全选
-const onSelectAll = (checked: boolean) => {
-  if (checked) {
-    // 全选时，将所有数据添加到 Map
-    dataList.value.forEach((item) => {
-      selectedData.value.set(item.id, item)
-    })
-    selectedKeys.value = Array.from(selectedData.value.keys())
-  } else {
-    // 取消全选时，清空 Map
-    dataList.value.forEach((item) => {
-      selectedData.value.delete(item.id)
-    })
-    selectedKeys.value = Array.from(selectedData.value.keys())
-  }
-  emitSelectUser()
-}
-
-// 从选中列表中移除用户
-const handleDeleteSelectedUser = (user: UserResp) => {
-  selectedData.value.delete(user.id)
-  selectedKeys.value = Array.from(selectedData.value.keys())
-  emitSelectUser()
-}
-
-// 清空所有选中数据
-const onClearSelected = () => {
-  selectedData.value.clear()
-  selectedKeys.value = []
-  emitSelectUser()
-}
-
-// 部门列表
-const { deptList, getDeptList } = useDept()
-// 过滤部门
-const filterDeptOptions = (searchKey: string, nodeData: TreeNodeData) => {
-  if (nodeData.title) {
-    return nodeData.title.toLowerCase().includes(searchKey.toLowerCase())
-  }
-  return false
-}
-
-onMounted(async () => {
-  await getDeptList()
-  // 过滤已选择的用户
-  if (props.value && props.value.length > 0) {
-    const { data } = await listAllUser({ userIds: props.value })
-    if (props.multiple) {
-      // 使用 Map 存储用户，避免重复
-      data.map((i) => ({ ...i, id: `${i?.id}`, disabled: false })).forEach((item) => {
-        if (props.value.includes(item.id)) {
-          selectedData.value.set(item.id, item)
+watch(visible, (val) => {
+  if (val) {
+    const preSelected = Array.isArray(inputUser.value) ? inputUser.value : []
+    if (preSelected.length) {
+      if (!multiple.value) {
+        const first = preSelected[0]
+        const id = String(first?.id ?? '')
+        if (id) selectedMap.value = { [id]: first as any }
+      } else {
+        const map: Record<string, any> = {}
+        for (const s of preSelected as any[]) {
+          const id = String((s as any)?.id ?? '')
+          if (id) map[id] = s
         }
-      })
-      selectedKeys.value = Array.from(selectedData.value.keys())
-    } else {
-      const user = data.find((item) => props.value[0] === item.id)
-      if (user) {
-        selectedData.value.set(user.id, user)
-        selectedKeys.value = [user.id]
+        selectedMap.value = map
       }
     }
+    search()
+  } else {
+    resetForm()
+    selectedMap.value = {}
+    isSelectAll.value = false
+    pagination.current = 1
   }
 })
 
-defineExpose({ onClearSelected })
+watch(dataList, () => computeIsSelectAll())
+watch(selectedMap, () => computeIsSelectAll(), { deep: true })
+
+defineExpose({ onClearSelected: () => onClear() })
 </script>
 
 <style scoped>
-:deep(.arco-row-align-start) {
-  align-items: normal;
-}
-
-.container {
-  padding: 0 20px;
+:deep(.arco-table-content) {
+  height: 65vh;
 }
 </style>

@@ -26,12 +26,17 @@
       v-model:visible="visible"
       v-if="visible"
       title="选择站点"
-      width="80%"
+      width="90%"
       :footer="false"
       :mask-closable="true"
     >
       <a-row :gutter="[16, 16]">
-        <a-col :xs="24" :sm="16" :md="16" :lg="16" :xl="16">
+        <a-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <a-card :bordered="false" style="height: 65vh;">
+            <RegionTree ref="regionTreeRef" @select="selectRegion" />
+          </a-card>
+        </a-col>
+        <a-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
           <a-card :bordered="false">
             <GiTable
               row-key="id"
@@ -85,7 +90,7 @@
           </a-card>
         </a-col>
 
-        <a-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+        <a-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
           <a-card :title="`已选择 ${selectedList.length} 条`" :bordered="false">
             <GiTable
               row-key="id"
@@ -127,8 +132,9 @@ import { computed, reactive, ref, watch } from "vue";
 import type { ColumnItem } from "@/components/GiForm";
 import type { TableInstance } from "@arco-design/web-vue";
 import { useResetReactive, useTable } from "@/hooks";
-import { stationList, type StationInfo } from "@/apis/station/station-info";
+import { stationList, type StationInfo } from "@/apis";
 import { DisEnableStatusList } from "@/constant/common";
+import RegionTree from "@/views/station/components/RegionTree.vue";
 
 defineOptions({ name: "StationSelect" });
 
@@ -153,6 +159,7 @@ const inputStation = computed<any>(() => props.inputStation);
 const inputDisplay = ref<string>("");
 const isSelectAll = ref<boolean>(false);
 const visible = ref<boolean>(false);
+const regionTreeRef = ref<typeof RegionTree>();
 
 watch(
   () => props.inputStation,
@@ -164,10 +171,11 @@ watch(
   { deep: true, immediate: true }
 )
 
-type QueryForm = { name?: string; status?: number };
+type QueryForm = { name?: string; status?: number; districtId?: string };
 const [queryForm, resetForm] = useResetReactive<QueryForm>({
   name: undefined,
   status: undefined,
+  districtId: undefined,
 });
 
 const queryFormColumns: ColumnItem[] = reactive([
@@ -175,14 +183,14 @@ const queryFormColumns: ColumnItem[] = reactive([
     type: "input",
     label: "站点名称",
     field: "name",
-    span: { xs: 24, sm: 12, xxl: 8 },
+    span: { xs: 24, sm: 12, xxl: 12 },
     props: { placeholder: "请输入站点名称" },
   },
   {
     type: "select",
     label: "状态",
     field: "status",
-    span: { xs: 24, sm: 12, xxl: 8 },
+    span: { xs: 24, sm: 12, xxl: 12 },
     props: {
       options: DisEnableStatusList,
       placeholder: "请选择状态",
@@ -197,7 +205,7 @@ const {
   pagination,
   search,
 } = useTable(
-  (page) => stationList({ ...queryForm, ...page } as any),
+  (page) => stationList({ ...queryForm, ...page }),
   { immediate: false }
 );
 
@@ -330,6 +338,12 @@ const reset = () => {
   resetForm();
   search();
 };
+
+const selectRegion = (keys: Array<any>) => {
+  queryForm.districtId = keys[0];
+  search();
+};
+
 watch(visible, (val) => {
   if (val) {
     const preSelected = Array.isArray(inputStation.value) ? inputStation.value : []
@@ -349,7 +363,6 @@ watch(visible, (val) => {
     }
     search()
   } else {
-    // 弹窗关闭，恢复初始状态
     resetForm()
     selectedMap.value = {}
     isSelectAll.value = false
