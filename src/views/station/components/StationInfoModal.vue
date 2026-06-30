@@ -6,7 +6,11 @@
     :confirm-loading="isSubmitting"
     @before-ok="handleSubmit"
     @cancel="close">
-      <GiForm v-model="form" :columns="columns" size="medium" />
+      <GiForm v-model="form" :columns="columns" size="medium">
+        <template #location>
+          <MapSelect v-model="address" />
+        </template>
+      </GiForm>
   </a-modal>
 </template>
 
@@ -18,6 +22,7 @@ import { getRegionTree } from '@/apis'
 
 defineOptions({ name: 'StationInfoModal' })
 
+const address = ref('')
 const editId = ref(null)
 const title = ref('新增站点')
 const regionTree = ref<any[]>([])
@@ -29,6 +34,11 @@ const onOpen = async (data? :any) => {
     const detail = await getStationDetail(data.id)
     if (detail?.success) {
       form.value = detail.data
+      if (detail.data.lat && detail.data.lng) {
+        address.value = detail.data.lat + ',' + detail.data.lng
+      } else {
+        address.value = ''
+      }
     }
   }
   visible.value = true
@@ -68,8 +78,7 @@ const columns: any[] = reactive([
   { type: 'input', label: '详细地址', field: 'address', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入详细地址' } },
   { type: 'input', label: '负责人姓名', field: 'managerName', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入负责人姓名' } },
   { type: 'input', label: '负责人电话', field: 'managerPhone', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入负责人电话' } },
-  { type: 'input-number', label: '经度', field: 'lng', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入经度' } },
-  { type: 'input-number', label: '纬度', field: 'lat', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入纬度' } },
+  { type: 'input', label: '地址', field: 'location', span: { xs: 24, sm: 12, xxl: 24 } },
   { type: 'tree-select', label: '所属区域', field: 'districtId', span: { xs: 24, sm: 12, xxl: 12 }, 
     props: { 
       placeholder: '请选择所属区域',
@@ -86,6 +95,10 @@ const columns: any[] = reactive([
 
 async function handleSubmit() {
   isSubmitting.value = true
+  if (address.value) {
+    form.value.lat = address.value.split(',')[0]
+    form.value.lng = address.value.split(',')[1]
+  }
   try {
     if (editId.value) {
       await editStation(form.value, editId.value)
