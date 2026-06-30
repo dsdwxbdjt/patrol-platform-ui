@@ -16,12 +16,11 @@
       <template #problemPhoto>
         <a-upload
           action="/dev-api/api/file/upload"
-          @change="handleUpload"
           :auto-upload="true"
           list-type="picture-card"
-          :file-list="fileList"
+          v-model:file-list="fileList"
+          image-preview
           :headers="uploadHeaders"
-          :max-count="1"
         >
           <a-button type="primary">选择图片</a-button>
         </a-upload>
@@ -64,6 +63,14 @@ const onOpen = async (data?: any) => {
     const detail = await getOrderDetail(data.id)
     if (detail?.success) {
       form.value = detail.data
+      if (detail.data.problemPhotos && detail.data.problemPhotos.length > 0) {
+        fileList.value = detail.data.problemPhotos.map((item: any) => ({
+          uid: item.id,
+          name: item.name,
+          url: item.url,
+          status: 'done',
+        }))
+      }
     }
   }
   visible.value = true
@@ -88,7 +95,15 @@ const columns: any[] = reactive([
 async function handleSubmit() {
   isSubmitting.value = true
   try {
-    form.value.problemPhoto = uploadList.value.map((item: any) => item.data.id).join(',')
+    const fileListIds = [] as any[]
+    fileList.value.forEach((item: any) => {
+      if (item.response) {
+        fileListIds.push(item.response.data.id)
+      } else {
+        fileListIds.push(item.uid)
+      }
+    })
+    form.value.problemPhoto = fileListIds.join(',')
     if (editId.value) {
       await editOrder(form.value, editId.value)
     } else {
@@ -115,11 +130,6 @@ async function getInspectorList() {
   if (res?.success) {
     inspectorOptions.value = (res.data.list || []).map((item: any) => ({ label: item.nickname || item.username, value: item.id }))
   }
-}
-
-const uploadList = ref<any[]>([])
-function handleUpload(file: any) {
-  uploadList.value = file.map((item: any) => item.response)
 }
 
 function handleSelectSite(site: any) {

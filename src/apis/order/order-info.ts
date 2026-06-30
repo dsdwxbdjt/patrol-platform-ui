@@ -12,6 +12,7 @@ export type OrderInfo = {
   status?: number
   level: number
   problemPhoto?: string
+  problemPhotos?: any[]
   createdAt: string
   updatedAt: string
   deletedAt: string | null

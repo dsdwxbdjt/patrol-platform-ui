@@ -22,7 +22,7 @@
       </a-descriptions-item>
       <a-descriptions-item label="问题照片">
         <template v-if="currentOrder?.problemPhoto">
-          <a-image :src="currentOrder.problemPhoto" width="100" />
+          <a-image v-for="item in currentOrder.problemPhotos" :src="item.url" width="100" />
         </template>
         <span v-else>-</span>
       </a-descriptions-item>
