@@ -20,7 +20,7 @@ export type BatteryBoxInfo = {
   id: string
   batteryCabinetId: string
   boxNo: string
-  deviceSn: string
+  powerLevel: number
   remark?: string
   status?: string
   createdAt: string

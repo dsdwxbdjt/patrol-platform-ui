@@ -70,6 +70,7 @@ const columns: TableInstance['columns'] = [
   },
   { title: '电池柜名称', dataIndex: 'name', width: 150, ellipsis: true, tooltip: true, fixed: 'left' },
   { title: '设备编号', dataIndex: 'deviceSn', width: 150, ellipsis: true, tooltip: true },
+  { title: '所在站点', dataIndex: 'stations', render: ({ record }) => record.stations?.name || '-', width: 150, ellipsis: true, tooltip: true },
   { title: '经度', dataIndex: 'lng', width: 120 },
   { title: '纬度', dataIndex: 'lat', width: 120 },
   { title: '状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center' },

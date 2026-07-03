@@ -5,6 +5,7 @@
         <a-descriptions :data="detailData" :column="3">
           <a-descriptions-item label="电池柜名称">{{ detailData.name }}</a-descriptions-item>
           <a-descriptions-item label="设备编号">{{ detailData.deviceSn }}</a-descriptions-item>
+          <a-descriptions-item label="所属站点">{{ detailData.stations?.name ?? '-' }}</a-descriptions-item>
           <a-descriptions-item label="状态">
             <a-tag v-if="detailData.status === 'NORMAL'" color="green" size="small">正常</a-tag>
             <a-tag v-else-if="detailData.status === 'ABNORMAL'" color="red" size="small">异常</a-tag>
@@ -101,7 +102,7 @@ const boxColumns: TableInstance['columns'] = [
     fixed: 'left',
   },
   { title: '仓号', dataIndex: 'boxNo', width: 120, ellipsis: true, tooltip: true, fixed: 'left' },
-  { title: '设备编号', dataIndex: 'deviceSn', width: 150, ellipsis: true, tooltip: true },
+  { title: '电量(%)', dataIndex: 'powerLevel', width: 150, ellipsis: true },
   { title: '状态', dataIndex: 'status', slotName: 'boxStatus', width: 100, align: 'center' },
   { title: '备注', dataIndex: 'remark', width: 200, ellipsis: true, tooltip: true },
   { title: '创建时间', dataIndex: 'createdAt', width: 180 },
@@ -159,14 +160,13 @@ onMounted(() => {
 }
 
 .detail-section {
-  padding: 20px;
+  padding: 12px;
   overflow-y: auto;
   background-color: #fff;
 }
 
 .tab-section {
   flex: 1;
-  margin-top: 16px;
   overflow: hidden;
   background-color: #fff;
 }

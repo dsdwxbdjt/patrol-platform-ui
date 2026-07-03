@@ -2,7 +2,7 @@
   <GiPageLayout>
     <GiTable 
       row-key="id" 
-      :data="dataList" 
+      :data="tableData" 
       :columns="columns" 
       :loading="loading" 
       :scroll="{ x: '100%', y: '100%', minWidth: 1800 }" 
@@ -111,7 +111,7 @@ const unBindStation = async (record: any) => {
   })
 }
 
-const { tableData: dataList, loading, pagination, search, handleDelete } = useTable((page) => getUserList({ ...queryForm, ...page }), { immediate: true })
+const { tableData, loading, pagination, search, handleDelete } = useTable((page) => getUserList({ ...queryForm, ...page }), { immediate: true })
 
 </script>
 

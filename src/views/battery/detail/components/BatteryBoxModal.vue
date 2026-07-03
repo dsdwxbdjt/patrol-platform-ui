@@ -34,9 +34,9 @@ const boxStatusOptions = [
 ]
 
 const columns: any[] = reactive([
-  { type: 'input', label: '仓号', field: 'boxNo', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入仓号' } },
-  { type: 'input', label: '设备编号', field: 'deviceSn', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入设备编号' } },
-  { type: 'select', label: '状态', field: 'status', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择状态', options: boxStatusOptions } },
+  { type: 'input', label: '仓号', field: 'boxNo', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入仓号' } },
+  { type: 'input-number', label: '电量(%)', field: 'powerLevel', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入电量%)' } },
+  { type: 'select', label: '状态', field: 'status', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请选择状态', options: boxStatusOptions } },
   { type: 'textarea', label: '备注', field: 'remark', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入备注', maxLength: 200, showWordLimit: true } },
 ])
 
@@ -49,7 +49,7 @@ const onOpen = async (cabinetIdVal: string, data?: any) => {
     if (detail?.success) {
       form.value = {
         boxNo: detail.data.boxNo,
-        deviceSn: detail.data.deviceSn,
+        powerLevel: detail.data.powerLevel,
         status: detail.data.status,
         remark: detail.data.remark,
         batteryCabinetId: cabinetIdVal,

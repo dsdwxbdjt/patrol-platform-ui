@@ -22,7 +22,7 @@ export const systemRoutes: RouteRecordRaw[] = [
         path: '/station',
         name: 'Station',
         component: () => import('@/views/station/index.vue'),
-        meta: { title: '站点列表', icon: 'desktop', hidden: false, affix: true },
+        meta: { title: '站点信息', icon: 'desktop', hidden: false, affix: true },
       },
       {
         path: '/station/:id',
@@ -64,13 +64,13 @@ export const systemRoutes: RouteRecordRaw[] = [
     path: '/battery',
     name: 'Battery',
     component: Layout,
-    meta: { title: '电池管理', icon: 'dashboard', hidden: false },
+    meta: { title: '换电站信息', icon: 'dashboard', hidden: false },
     children: [
       {
         path: '/battery',
         name: 'Battery',
         component: () => import('@/views/battery/index.vue'),
-        meta: { title: '电池管理', icon: 'desktop', hidden: false, affix: true },
+        meta: { title: '换电站信息', icon: 'desktop', hidden: false, affix: true },
       },
     ],
   },

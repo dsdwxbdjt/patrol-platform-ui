@@ -68,14 +68,13 @@ onMounted(() => {
 }
 
 .detail-section {
-  padding: 20px;
+  padding: 12px;
   overflow-y: auto;
   background-color: #fff;
 }
 
 .tab-section {
   flex: 1;
-  margin-top: 16px;
   overflow: hidden;
   background-color: #fff;
 }
