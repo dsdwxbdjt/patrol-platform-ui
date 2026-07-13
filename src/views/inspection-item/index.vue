@@ -27,7 +27,7 @@
         ></GiForm>
       </template>
       <template #type="{ record }">
-        <a-tag :color="getTypeColor(record.type)">{{ getTypeText(record.type) }}</a-tag>
+        <GiCellTag :value="record.type" :dict="check_type" />
       </template>
       <template #operation="{ record }">
         <a-link @click="onView(record)">查看</a-link>
@@ -48,17 +48,12 @@ import { useResetReactive, useTable } from '@/hooks'
 import type { ColumnItem } from '@/components/GiForm'
 import InspectionItemModal from './components/InspectionItemModal.vue'
 import InspectionItemDrawer from './components/InspectionItemDrawer.vue'
+import { useDict } from '@/hooks/app'
 
 const inspectionItemModalRef = ref<typeof InspectionItemModal>()
 const inspectionItemDrawerRef = ref<typeof InspectionItemDrawer>()
 const [queryForm, resetForm] = useResetReactive({})
-
-const typeOptions = [
-  { label: '普通检查', value: 1 },
-  { label: '故障检查', value: 2 },
-  { label: '安全检查', value: 3 },
-  { label: '其他检查', value: 4 },
-]
+const { check_type } = useDict('check_type')
 
 const queryFormColumns: ColumnItem[] = reactive([
   {
@@ -76,7 +71,7 @@ const queryFormColumns: ColumnItem[] = reactive([
     field: 'type',
     span: { xs: 24, sm: 6, xxl: 6 },
     props: {
-      options: typeOptions,
+      options: check_type,
       placeholder: '请选择类型',
     },
   },
@@ -103,21 +98,6 @@ const columns: TableInstance['columns'] = [
   { title: '创建时间', dataIndex: 'createdAt', width: 180 },
   { title: '操作', dataIndex: 'operation', slotName: 'operation', width: 180, align: 'center', fixed: 'right' },
 ]
-
-const typeMap: Record<number, { text: string; color: string }> = {
-  1: { text: '普通检查', color: 'blue' },
-  2: { text: '故障检查', color: 'red' },
-  3: { text: '安全检查', color: 'orange' },
-  4: { text: '其他检查', color: 'gray' },
-}
-
-function getTypeText(type?: number) {
-  return typeMap[type as keyof typeof typeMap]?.text || '未知'
-}
-
-function getTypeColor(type?: number) {
-  return typeMap[type as keyof typeof typeMap]?.color || 'gray'
-}
 
 const submitted = () => {
   search()
