@@ -144,7 +144,7 @@ const props = defineProps<{
   buttonName?: string
   isDisabled?: boolean
   roleId?: string
-  inputUser?: any
+  inputUsers?: any
 }>()
 
 const genderDict = [
@@ -182,13 +182,13 @@ const multiple = computed<boolean>(() => props.multiple ?? true)
 const modelType = computed<string>(() => props.modelType ?? 'input')
 const buttonName = computed<string>(() => props.buttonName ?? '选择人员')
 const isDisabled = computed<boolean>(() => props.isDisabled ?? false)
-const inputUser = computed<any>(() => props.inputUser)
+const inputUsers = computed<any>(() => props.inputUsers)
 const inputDisplay = ref<string>('')
 const isSelectAll = ref<boolean>(false)
 const visible = ref<boolean>(false)
 
 watch(
-  () => props.inputUser,
+  () => props.inputUsers,
   (newVal) => {
     if (newVal) {
       inputDisplay.value = newVal.map((item: any) => item.nickname).join(',')
@@ -356,7 +356,7 @@ const reset = () => {
 }
 watch(visible, (val) => {
   if (val) {
-    const preSelected = Array.isArray(inputUser.value) ? inputUser.value : []
+    const preSelected = Array.isArray(inputUsers.value) ? inputUsers.value : []
     if (preSelected.length) {
       if (!multiple.value) {
         const first = preSelected[0]

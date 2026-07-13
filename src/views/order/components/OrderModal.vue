@@ -8,7 +8,7 @@
     @cancel="close">
     <GiForm v-model="form" :columns="columns" size="medium">
       <template #stationId>
-        <StationSelect v-model="form.stationId" @select-station="handleSelectSite" :inputSites="inputSites" />
+        <StationSelect v-model="form.stationId" @select-station="handleSelectSite" :inputStation="inputStation" />
       </template>
       <template #inspectorId>
         <UserSelect v-model="form.inspectorId" @select-user="handleSelectUser" :inputUsers="inputUsers" />
@@ -48,7 +48,7 @@ const editId = ref<string | null>(null)
 const title = ref('新增工单')
 const stationOptions = ref<any[]>([])
 const inspectorOptions = ref<any[]>([])
-const inputSites = ref()
+const inputStation = ref()
 const inputUsers = ref()
 const fileList = ref<any[]>([])
 
@@ -63,6 +63,8 @@ const onOpen = async (data?: any) => {
     const detail = await getOrderDetail(data.id)
     if (detail?.success) {
       form.value = detail.data
+      inputStation.value = [detail.data.station]
+      inputUsers.value = [detail.data.inspector]
       if (detail.data.problemPhotos && detail.data.problemPhotos.length > 0) {
         fileList.value = detail.data.problemPhotos.map((item: any) => ({
           uid: item.id,
@@ -145,6 +147,7 @@ function close() {
   visible.value = false
   editId.value = null
   title.value = '新增工单'
+  fileList.value = []
 }
 
 defineExpose({ onOpen })
