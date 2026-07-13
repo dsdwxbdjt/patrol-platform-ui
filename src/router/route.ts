@@ -25,80 +25,46 @@ export const systemRoutes: RouteRecordRaw[] = [
         meta: { title: '站点信息', icon: 'desktop', hidden: false, affix: true },
       },
       {
-        path: '/station/:id',
-        name: 'StationDetail',
-        component: () => import('@/views/station/detail/index.vue'),
-        meta: { title: '站点详情', hidden: true, affix: true },
-      },
-    ],
-  },
-  {
-    path: '/user-info',
-    name: 'UserInfo',
-    component: Layout,
-    meta: { title: '用户管理', icon: 'dashboard', hidden: false },
-    children: [
-      {
         path: '/user-info',
         name: 'UserInfo',
         component: () => import('@/views/user-info/index.vue'),
         meta: { title: '用户管理', icon: 'desktop', hidden: false, affix: true },
       },
-    ],
-  },
-  {
-    path: '/order',
-    name: 'Order',
-    component: Layout,
-    meta: { title: '工单管理', icon: 'dashboard', hidden: false },
-    children: [
       {
         path: '/order',
         name: 'Order',
         component: () => import('@/views/order/index.vue'),
         meta: { title: '工单管理', icon: 'desktop', hidden: false, affix: true },
       },
-    ],
-  },
-  {
-    path: '/battery',
-    name: 'Battery',
-    component: Layout,
-    meta: { title: '换电站信息', icon: 'dashboard', hidden: false },
-    children: [
       {
         path: '/battery',
         name: 'Battery',
         component: () => import('@/views/battery/index.vue'),
         meta: { title: '换电站信息', icon: 'desktop', hidden: false, affix: true },
       },
-    ],
-  },
-  {
-    path: '/dict',
-    name: 'Dict',
-    component: Layout,
-    meta: { title: '字典管理', icon: 'dashboard', hidden: false },
-    children: [
       {
         path: '/dict',
         name: 'Dict',
         component: () => import('@/views/dict/index.vue'),
         meta: { title: '字典管理', icon: 'desktop', hidden: false, affix: true },
       },
-    ],
-  },
-  {
-    path: '/battery-detail/:id',
-    name: 'BatteryDetail',
-    component: Layout,
-    meta: { title: '电池详情', icon: 'dashboard', hidden: true },
-    children: [
       {
         path: '/battery-detail/:id',
         name: 'BatteryDetail',
         component: () => import('@/views/battery/detail/index.vue'),
-        meta: { title: '电池详情', icon: 'desktop', hidden: false, affix: true },
+        meta: { title: '电池详情', icon: 'desktop', hidden: true, affix: true },
+      },
+      {
+        path: '/station/:id',
+        name: 'StationDetail',
+        component: () => import('@/views/station/detail/index.vue'),
+        meta: { title: '站点详情', hidden: true, affix: true },
+      },
+      {
+        path: '/inspection-item',
+        name: 'InspectionItem',
+        component: () => import('@/views/inspection-item/index.vue'),
+        meta: { title: '巡检项管理', icon: 'desktop', hidden: false, affix: true },
       },
     ],
   },
