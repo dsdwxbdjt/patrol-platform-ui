@@ -63,7 +63,7 @@ export const systemRoutes: RouteRecordRaw[] = [
       {
         path: '/inspection-item',
         name: 'InspectionItem',
-        component: () => import('@/views/inspection-item/index.vue'),
+        component: () => import('@/views/inspection/inspection-item/index.vue'),
         meta: { title: '巡检项管理', icon: 'desktop', hidden: false, affix: true },
       },
     ],
