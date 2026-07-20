@@ -114,9 +114,13 @@ function getStatusColor(status?: number) {
 }
 
 async function expandTask(task: InspectionTaskInfo) {
+  
   const res = await getInspectionTaskDetail(task.id)
   if (res?.success) {
-    currentTask.value = res.data
+    currentTask.value = {
+      ...res.data,
+      stationsId: res.data.stationsId || ''
+    }
     drawerVisible.value = true
   }
 }

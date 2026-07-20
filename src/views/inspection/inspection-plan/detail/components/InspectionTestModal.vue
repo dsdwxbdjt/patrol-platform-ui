@@ -32,7 +32,9 @@ import { useUserStore } from '@/stores'
 import { useDict } from '@/hooks/app/useDict'
 import dayjs from 'dayjs'
 import { updateInspectionTaskItemResult } from '@/apis'
+import { Message } from '@arco-design/web-vue'
 
+const dataForm = ref<any>()
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 const fileList = ref<any[]>([])
@@ -72,7 +74,7 @@ const columns = computed(() => {
     { type: 'input', label: '巡检照片:', field: 'fileId', span: { xs: 24, sm: 24, xxl: 24 } },
   ]
 
-  if (formData.value.result === '3') {
+  if (formData.value.result === 3) {
     baseColumns.push(
       { type: 'select', label: '隐患类别:', field: 'level', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择隐患类别', options: level_option } },
       { type: 'textarea', label: '隐患描述:', field: 'inspectionDescription', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入隐患描述' } }
@@ -85,7 +87,7 @@ const columns = computed(() => {
 watch(
   () => formData.value.result,
   (newResult) => {
-    if (newResult !== '3') {
+    if (newResult !== 3) {
       formData.value.level = ''
       formData.value.inspectionDescription = ''
     }
@@ -104,6 +106,7 @@ function handleCancel() {
 }
 
 function openModal(detail: any) {
+  dataForm.value = detail
   const id = detail.id || ''
   formData.value = { ...detail, ...detail.inspectionItem || {}, id }
   if (!detail.checkAt) {
@@ -117,9 +120,6 @@ function openModal(detail: any) {
 
 function handleOk() {
   const fileListIds = [] as any[]
-  console.log(fileList.value);
-  // return
-  
   fileList.value.forEach((item: any) => {
     if (item.response) {
       fileListIds.push(item.response.data.id)
@@ -133,11 +133,15 @@ function handleOk() {
     result: formData.value.result,
     checkerId: formData.value.checkerId,
     checkAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    fileIds: fileListIds.join(',')
+    fileIds: fileListIds.join(','),
+    level: formData.value.level,
+    inspectionDescription: formData.value.inspectionDescription,
+    stationsId: dataForm.value.stationsId || ''
   }
   updateInspectionTaskItemResult(params, formData.value.id).then(res => {
     if (res.code === 200) {
-      console.log(res);
+      Message.success('更新成功')
+      handleCancel()
     }
   })
   
