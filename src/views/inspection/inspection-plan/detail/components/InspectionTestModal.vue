@@ -136,7 +136,7 @@ function handleOk() {
     fileIds: fileListIds.join(','),
     level: formData.value.level,
     inspectionDescription: formData.value.inspectionDescription,
-    stationsId: dataForm.value.stationsId || ''
+    stationId: dataForm.value.stationId || ''
   }
   updateInspectionTaskItemResult(params, formData.value.id).then(res => {
     if (res.code === 200) {

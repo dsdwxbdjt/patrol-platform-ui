@@ -95,7 +95,7 @@ function handleView(row: any) {
   getInspectionTaskItemDetail({ taskId: props.detail.id, itemId: row.id }).then((res) => {
     modalRef.value.openModal({
       ...res.data,
-      stationsId: props.detail.stationsId || ''
+      stationId: props.detail.stationId || ''
     })
   })
 }

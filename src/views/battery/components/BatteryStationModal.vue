@@ -8,8 +8,8 @@
     @cancel="close"
   >
     <GiForm v-model="form" :columns="columns" size="medium">
-      <template #stationsId>
-        <StationSelect v-model="form.stationsId" @select-station="handleSelectSite" :inputStation="inputStation" :multiple="false" />
+      <template #stationId>
+        <StationSelect v-model="form.stationId" @select-station="handleSelectSite" :inputStation="inputStation" :multiple="false" />
       </template>
       <template #location>
         <MapSelect v-model="address" />
@@ -40,7 +40,7 @@ const cabinetStatusOptions = [
 ]
 
 const columns: any[] = reactive([
-  { type: 'input', label: '所属站点', field: 'stationsId', span: { xs: 24, sm: 24, xxl: 24 } },
+  { type: 'input', label: '所属站点', field: 'stationId', span: { xs: 24, sm: 24, xxl: 24 } },
   { type: 'input', label: '电池柜名称', field: 'name', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入电池柜名称' } },
   { type: 'input', label: '设备编号', field: 'deviceSn', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请输入设备编号' } },
   { type: 'select', label: '状态', field: 'status', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择状态', options: cabinetStatusOptions } },
@@ -60,7 +60,7 @@ const onOpen = async (data?: any) => {
         deviceSn: detail.data.deviceSn,
         status: detail.data.status,
         remark: detail.data.remark,
-        stationsId: detail.data.stationsId,
+        stationId: detail.data.stationId,
       }
       if (detail.data.lat && detail.data.lng) {
         address.value = detail.data.lat + ',' + detail.data.lng
@@ -99,7 +99,7 @@ async function handleSubmit() {
 }
 
 function handleSelectSite(site: any) {
-  form.value.stationsId = site[0].id
+  form.value.stationId = site[0].id
 }
 
 function close() {

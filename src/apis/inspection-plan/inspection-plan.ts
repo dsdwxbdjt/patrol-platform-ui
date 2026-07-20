@@ -19,8 +19,8 @@ export type InspectionPlanInfo = {
 export type InspectionTaskInfo = {
   id: string
   planId: string
-  stationsId: string
-  stations?: any
+  stationId: string
+  station?: any
   status: number
   startTime?: string
   endTime?: string

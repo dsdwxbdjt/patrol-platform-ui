@@ -10,7 +10,7 @@ export type BatteryStationInfo = {
   lng?: number
   status?: string
   remark?: string
-  stationsId: string
+  stationId: string
   createdAt: string
   updatedAt: string
   deletedAt: string | null

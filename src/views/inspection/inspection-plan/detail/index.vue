@@ -119,7 +119,7 @@ async function expandTask(task: InspectionTaskInfo) {
   if (res?.success) {
     currentTask.value = {
       ...res.data,
-      stationsId: res.data.stationsId || ''
+      stationId: res.data.stationId || ''
     }
     drawerVisible.value = true
   }
