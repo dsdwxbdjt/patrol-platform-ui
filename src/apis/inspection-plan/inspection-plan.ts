@@ -62,3 +62,23 @@ export function getInspectionPlanDetail(id: string) {
 export function getInspectionPlanList(query?: InspectionPlanListQuery) {
   return http.get(`${BASE_URL}/plan`, query)
 }
+
+/** @desc 删除巡检计划 */
+export function deleteInspectionPlan(id: string) {
+  return http.del(`${BASE_URL}/plan/${id}`)
+}
+
+/** @desc 巡检任务详情 */
+export function getInspectionTaskDetail(id: string) {
+  return http.get(`${BASE_URL}/task/${id}`)
+}
+
+/** @desc 巡检任务项详情 */
+export function getInspectionTaskItemDetail(query: any) {
+  return http.get(`${BASE_URL}/task-item`, query ) 
+}
+
+/** @desc 巡检任务项结果 */
+export function updateInspectionTaskItemResult(data: any, id: string) {
+  return http.post(`${BASE_URL}/task-item/${id}`, data)
+}

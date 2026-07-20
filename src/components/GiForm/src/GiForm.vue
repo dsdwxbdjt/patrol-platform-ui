@@ -7,10 +7,15 @@
           v-bind="item.gridItemProps || defaultGridItemProps"
           :span="item.span || item.gridItemProps?.span || defaultGridItemProps?.span"
         >
+          <template v-if="item.type === 'group-title'">
+            <div class="group-title">{{ item.label }}</div>
+          </template>
           <a-form-item
+            v-else
             v-bind="item.formItemProps" :field="item.field" :rules="getFormItemRules(item)"
             :disabled="isDisabled(item)"
           >
+            
             <template #label>
               <template v-if="typeof item.label === 'string'">{{ item.label }}</template>
               <component :is="item.label" v-else></component>
@@ -25,6 +30,9 @@
                   :model-value="modelValue[item.field as keyof typeof modelValue]"
                   @update:model-value="updateValue($event, item.field)"
                 />
+              </template>
+              <template v-else-if="item.type === ('text' as any) && !!modelValue[item.field as keyof typeof modelValue]">
+                <span>{{ modelValue[item.field as keyof typeof modelValue] }}</span>
               </template>
               <component
                 :is="`a-${item.type}`" v-else v-bind="getComponentBindProps(item)"
@@ -284,5 +292,25 @@ defineExpose({ formRef })
 <style lang="scss" scoped>
 .gi-form__fold-btn {
   padding: 0 5px;
+}
+.group-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #121314;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  background-color: var(--color-primary-light-1);
+  padding: 4px 0px;
+  margin-bottom: 12px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background-color: var(--color-primary-light-4);
+    margin-right: 8px;
+  }
 }
 </style>

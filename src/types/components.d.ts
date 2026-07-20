@@ -53,6 +53,7 @@ declare module 'vue' {
     Map: typeof import('./../components/MapSelect/map.vue')['default']
     MapSelect: typeof import('./../components/MapSelect/index.vue')['default']
     MinuteForm: typeof import('./../components/GenCron/CronForm/component/minute-form.vue')['default']
+    ModuleName: typeof import('./../components/ModuleName/index.vue')['default']
     MonthForm: typeof import('./../components/GenCron/CronForm/component/month-form.vue')['default']
     MultipartUpload: typeof import('./../components/MultipartUpload/index.vue')['default']
     ParentView: typeof import('./../components/ParentView/index.vue')['default']

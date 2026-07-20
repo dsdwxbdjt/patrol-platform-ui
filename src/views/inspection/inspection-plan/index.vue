@@ -21,25 +21,25 @@
       </template>
       <template #operation="{ record }">
         <a-link @click="onView(record)">查看</a-link>
+        <a-link @click="onDelete(record)">删除</a-link>
       </template>
     </GiTable>
     <InspectionPlanModal ref="inspectionPlanModalRef" @submitted="submitted" />
-    <InspectionPlanDrawer ref="inspectionPlanDrawerRef" />
   </GiPageLayout>
 </template>
 
 <script setup lang="ts">
 import type { TableInstance } from '@arco-design/web-vue'
 import { h } from 'vue'
-import { getInspectionPlanList, type InspectionPlanInfo } from '@/apis/inspection-plan/inspection-plan'
+import { useRouter } from 'vue-router'
+import { getInspectionPlanList, deleteInspectionPlan } from '@/apis'
 import { useTable } from '@/hooks'
 import InspectionPlanModal from './components/InspectionPlanModal.vue'
-import InspectionPlanDrawer from './components/InspectionPlanDrawer.vue'
 
+const router = useRouter()
 const inspectionPlanModalRef = ref<typeof InspectionPlanModal>()
-const inspectionPlanDrawerRef = ref<typeof InspectionPlanDrawer>()
 
-const { tableData: dataList, loading, pagination, search } = useTable(
+const { tableData: dataList, loading, pagination, search, handleDelete } = useTable(
   (page) => getInspectionPlanList({ page: page.current, size: page.pageSize }),
   { immediate: true }
 )
@@ -78,7 +78,14 @@ const onAdd = () => {
 }
 
 const onView = (record: any) => {
-  inspectionPlanDrawerRef.value?.onOpen(record.id)
+  router.push(`/inspection-plan/detail/${record.id}`)
+}
+
+function onDelete(record: any) {
+  handleDelete(() => deleteInspectionPlan(record.id), {
+    content: `是否确定删除「${record.name}」？`,
+    showModal: true,
+  })
 }
 
 function getStatusText(status?: number) {

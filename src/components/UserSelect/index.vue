@@ -269,7 +269,10 @@ const selectedColumns: TableInstance['columns'] = [
     align: 'center',
   },
 ]
-
+const selectedKeys = ref<string[]>([])
+const emitSelected = () => {
+  emit('select-user', selectedKeys.value)
+}
 const isSelected = (record: any): boolean =>
   !!selectedMap.value[String(record.id)]
 
@@ -332,9 +335,6 @@ const onClear = () => {
 
 const getEmitValue = (): string[] =>
   selectedList.value.map((u) => String(u.id))
-const emitSelected = () => {
-  
-}
 
 const onConfirm = () => {
   
