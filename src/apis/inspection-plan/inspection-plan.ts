@@ -74,8 +74,8 @@ export function getInspectionTaskDetail(id: string) {
 }
 
 /** @desc 巡检任务项详情 */
-export function getInspectionTaskItemDetail(query: any) {
-  return http.get(`${BASE_URL}/task-item`, query ) 
+export function getInspectionTaskItemDetail(id: string) {
+  return http.get(`${BASE_URL}/task-item/${id}`)
 }
 
 /** @desc 巡检任务项结果 */

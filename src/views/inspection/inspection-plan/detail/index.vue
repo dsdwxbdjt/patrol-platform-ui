@@ -81,7 +81,7 @@ const taskColumns: TableInstance['columns'] = [
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1),
     fixed: 'left',
   },
-  { title: '站点', dataIndex: 'stations.name', width: 200, ellipsis: true, tooltip: true },
+  { title: '站点', dataIndex: 'station.name', width: 200, ellipsis: true, tooltip: true },
   { title: '任务状态', dataIndex: 'status', slotName: 'taskStatus', width: 100, align: 'center' },
   { title: '开始时间', dataIndex: 'startTime', width: 180 },
   { title: '结束时间', dataIndex: 'endTime', width: 180 },

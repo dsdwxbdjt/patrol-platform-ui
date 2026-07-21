@@ -4,10 +4,18 @@
     :visible.sync="visible"
     :width="800"
     :confirm-loading="isSubmitting"
+    :maskClosable="false"
     @before-ok="handleSubmit"
     @cancel="close"
   >
-    <GiForm v-model="form" :columns="columns" size="medium" />
+    <GiForm v-model="form" :columns="columns" size="medium">
+      <template #stationIds>
+        <StationSelect v-model="form.stationIds" @select-station="handleSelectSite" :multiple="true" :inputStation="inputStation" />
+      </template>
+      <template #inspectionItemIds>
+        <InspectionItemSelect v-model="form.inspectionItemIds" @select-item="handleSelectItem" :inputItems="inputItems" :multiple="true" />
+      </template>
+    </GiForm>
   </a-modal>
 </template>
 
@@ -34,6 +42,16 @@ const form = ref({
 
 const stationOptions = ref<{ label: string; value: string }[]>([])
 const inspectionItemOptions = ref<{ label: string; value: string }[]>([])
+const inputStation = ref<any[]>([])
+const inputItems = ref<any[]>([])
+
+function handleSelectSite(stationIds: string[]) {
+  inputStation.value = stationIds
+}
+
+function handleSelectItem(itemIds: string[]) {
+  inputItems.value = itemIds
+}
 
 const columns: any[] = reactive([
   {
@@ -122,22 +140,18 @@ const loadInspectionItems = async () => {
 }
 
 const onOpen = async () => {
-  title.value = '新增巡检计划'
-  form.value = {
-    name: '',
-    planDate: '',
-    endDate: '',
-    remark: '',
-    stationIds: [],
-    inspectionItemIds: [],
-  }
   visible.value = true
 }
 
 async function handleSubmit() {
   isSubmitting.value = true
   try {
-    await createInspectionPlan(form.value)
+    const formData = {
+      ...form.value,
+      stationIds: inputStation.value.map((item: any) => item.id),
+      inspectionItemIds: inputItems.value.map((item: any) => item.id),
+    }
+    await createInspectionPlan(formData)
     emit('submitted')
     close()
   } catch (_) {
@@ -156,6 +170,8 @@ function close() {
     stationIds: [],
     inspectionItemIds: [],
   }
+  inputStation.value = []
+  inputItems.value = []
   visible.value = false
 }
 

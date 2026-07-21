@@ -5,10 +5,14 @@
     :width="800"
     @cancel="handleCancel"
     @before-ok="handleOk"
+    :maskClosable="false"
   >
     <GiForm v-model="formData" ref="formRef" :columns="columns" size="medium">
       <template #checkerId>
         <UserSelect modelType="input" @select-user="handleChangeCheckerId" :inputUsers="[userInfo]" />
+      </template>
+      <template #type>
+        <GiCellTag :value="formData.type" :dict="check_type" />
       </template>
       <template #fileId>
         <a-upload
@@ -39,27 +43,13 @@ const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 const fileList = ref<any[]>([])
 const visible = ref(false)
-const formData = ref({})
+const formData = ref<any>({})
 const uploadHeaders = computed(() => {
   return {
     'Authorization': 'Bearer ' + localStorage.getItem('token') || ''
   }
 })
-const { level_option } = useDict('level_option')
-const resultOptions = ref([
-  {
-    label: '待处理',
-    value: 1
-  },
-  {
-    label: '巡检通过',
-    value: 2
-  },
-  {
-    label: '巡检未通过',
-    value: 3
-  },
-])
+const { level_option, check_type, Inspection_result } = useDict('level_option', 'check_type', 'Inspection_result')
 
 const columns = computed(() => {
   const baseColumns: any[] = [
@@ -69,7 +59,7 @@ const columns = computed(() => {
     { type: 'text', label: '巡检任务项类型:', field: 'type', span: { xs: 12, sm: 12, xxl: 12 } },
     { type: 'text', label: '巡检任务项备注:', field: 'remark', span: { xs: 12, sm: 12, xxl: 12 } },
     { type: 'group-title', label: '巡检任务信息', span: { xs: 24, sm: 24, xxl: 24 } },
-    { type: 'select', label: '巡检结果:', field: 'result', span: { xs: 12, sm: 12, xxl: 12 }, props: { options: resultOptions } },
+    { type: 'select', label: '巡检结果:', field: 'result', span: { xs: 12, sm: 12, xxl: 12 }, props: { options: Inspection_result } },
     { type: 'select', label: '巡检人:', field: 'checkerId', span: { xs: 12, sm: 12, xxl: 12 } },
     { type: 'input', label: '巡检照片:', field: 'fileId', span: { xs: 24, sm: 24, xxl: 24 } },
   ]
@@ -111,7 +101,7 @@ function openModal(detail: any) {
   formData.value = { ...detail, ...detail.inspectionItem || {}, id }
   if (!detail.checkAt) {
     formData.value.checkerId = userInfo.value.id || null
-    formData.value.result = String(formData.value.result)
+    formData.value.result = formData.value.result
   } else {
     detail.files.length && (fileList.value = detail.files)
   }

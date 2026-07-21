@@ -27,10 +27,6 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
       const raw = res.data as any
       const data = formatResult ? formatResult(raw) : (!Array.isArray(raw) ? raw.list : raw)
       tableData.value = data
-      console.log(123123);
-      console.log(tableData.value);
-      
-      
       const total = !Array.isArray(res.data) ? res.data.total : data.length
       setTotal(total)
       onSuccess && onSuccess()

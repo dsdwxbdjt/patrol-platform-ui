@@ -49,6 +49,7 @@ declare module 'vue' {
     IconTableSize: typeof import('./../components/icons/IconTableSize.vue')['default']
     IconTreeAdd: typeof import('./../components/icons/IconTreeAdd.vue')['default']
     IconTreeReduce: typeof import('./../components/icons/IconTreeReduce.vue')['default']
+    InspectionItemSelect: typeof import('./../components/InspectionItemSelect/index.vue')['default']
     JsonPretty: typeof import('./../components/JsonPretty/index.vue')['default']
     Map: typeof import('./../components/MapSelect/map.vue')['default']
     MapSelect: typeof import('./../components/MapSelect/index.vue')['default']

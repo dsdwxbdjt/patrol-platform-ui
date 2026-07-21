@@ -17,27 +17,24 @@
         <a-descriptions-item label="备注" :span="2">{{ detail?.remark || '-' }}</a-descriptions-item>
       </a-descriptions>
 
-      <!-- 用户信息 -->
-      <a-divider orientation="left">巡检人员</a-divider>
-      <a-descriptions :column="2" border>
-        <a-descriptions-item label="姓名">{{ detail?.personnel?.nickname || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="用户名">{{ detail?.personnel?.username || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="手机号">{{ detail?.personnel?.phone || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="邮箱">{{ detail?.personnel?.email || '-' }}</a-descriptions-item>
-      </a-descriptions>
-
       <!-- 巡检项表格 -->
       <a-divider orientation="left">巡检项</a-divider>
       <GiTable
-        v-if="detail?.inspectionItems?.length"
+        v-if="detail?.inspectionTaskItems?.length"
         row-key="id"
-        :data="detail.inspectionItems"
+        :data="detail.inspectionTaskItems"
         :columns="itemColumns"
         :pagination="false"
         :disabled-tools="['size', 'refresh', 'setting', 'fullscreen']"
       >
         <template #operation="{ record }">
           <a-link @click="handleView(record)">查看</a-link>
+        </template>
+        <template #type="{ record }">
+          <GiCellTag :value="record.inspectionItem.type" :dict="check_type" />
+        </template>
+        <template #result="{ record }">
+          <GiCellTag :value="record.result" :dict="inspection_result" />
         </template>
       </GiTable>
       <a-empty v-else description="暂无巡检项" />
@@ -50,6 +47,9 @@
 import type { TableInstance } from '@arco-design/web-vue'
 import { getInspectionTaskItemDetail } from '@/apis'
 import InspectionTestModal from './InspectionTestModal.vue'
+import { useDict } from '@/hooks/app/useDict'
+
+const { check_type, inspection_result } = useDict('check_type', 'inspection_result')
 defineOptions({ name: 'InspectionTestDrawer' })
 
 const props = withDefaults(defineProps<{
@@ -76,10 +76,11 @@ const statusMap: Record<number, { text: string; color: string }> = {
 }
 
 const itemColumns: TableInstance['columns'] = [
-  { title: '巡检项名称', dataIndex: 'name', width: 200 },
-  { title: '描述', dataIndex: 'description',width: 350 },
-  { title: '类型', dataIndex: 'type', width: 100, align: 'center' },
-  { title: '创建时间', dataIndex: 'createdAt', width: 180 },
+  { title: '巡检项名称', dataIndex: 'inspectionItem.name', width: 200 },
+  { title: '描述', dataIndex: 'inspectionItem.description',width: 350 },
+  { title: '类型', dataIndex: 'inspectionItem.type', width: 100, align: 'center', slotName:'type' },
+  { title: '巡检结果', dataIndex: 'inspectionItem.result', width: 100, align: 'center', slotName:'result' },
+  { title: '创建时间', dataIndex: 'inspectionItem.createdAt', width: 180 },
   { title: '操作', dataIndex: 'operation',slotName:'operation', width: 120, align: 'center' },
 ]
 
@@ -92,7 +93,7 @@ function getStatusColor(status?: number) {
 }
 
 function handleView(row: any) {
-  getInspectionTaskItemDetail({ taskId: props.detail.id, itemId: row.id }).then((res) => {
+  getInspectionTaskItemDetail(row.id).then((res) => {
     modalRef.value.openModal({
       ...res.data,
       stationId: props.detail.stationId || ''
