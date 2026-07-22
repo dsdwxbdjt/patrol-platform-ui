@@ -110,7 +110,7 @@ function handleAiReport() {
   请根据图片生成巡检描述，并严格遵循以下规则：
   
   1. 仅根据图片内容以及巡检项「${content}」描述隐患，不得编造不存在的问题。
-  2. 巡检描述使用专业、简洁的语言，不要出现空行。
+  2. 巡检描述使用专业、简洁的语言；不要出现空行,但是不同模块要换行；不要出现类似**、##等格式的区分线或标题。
   3. 根据图片中的隐患数量判断隐患等级：
      - 1 个隐患：GENERAL
      - 2 个隐患：SERIOUS
@@ -153,12 +153,12 @@ function handleAiReport() {
             SERIOUS: 2,
             CRITICAL: 3,
           }
-          formData.value.level = HAZARD_LEVEL_DICT[assistantMsg.content.trim().split('\n')[1].split(':')[1]] || null
+          formData.value.level = HAZARD_LEVEL_DICT[assistantMsg.content.split('\n')[assistantMsg.content.split('\n').length - 1].split(':')[1]] || null
           break
         }
         const text = decoder.decode(value, { stream: true })
         assistantMsg.content += text
-        formData.value.inspectionDescription = assistantMsg.content.trim().split('\n')[0]
+        formData.value.inspectionDescription = assistantMsg.content.trim().split('\n').slice(0, -1).join('\n')
       }
       isConnecting.value = false
     }
