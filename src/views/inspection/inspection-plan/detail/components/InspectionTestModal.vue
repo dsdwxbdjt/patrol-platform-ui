@@ -26,17 +26,22 @@
           <a-button type="primary">选择图片</a-button>
         </a-upload>
       </template>
+      <template #aiReport>
+        <a-button :loading="isConnecting" @click="handleAiReport" type="primary">生成报告</a-button>
+      </template>
     </GiForm>
   </a-modal>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useUserStore } from '@/stores'
 import { useDict } from '@/hooks/app/useDict'
 import dayjs from 'dayjs'
 import { updateInspectionTaskItemResult } from '@/apis'
 import { Message } from '@arco-design/web-vue'
+import { getToken } from '@/utils/auth'
+
 
 const dataForm = ref<any>()
 const userStore = useUserStore()
@@ -66,11 +71,11 @@ const columns = computed(() => {
 
   if (formData.value.result === 3) {
     baseColumns.push(
+      { type: 'select', label: 'AI生成报告:', field: 'aiReport', span: { xs: 24, sm: 24, xxl: 24 } },
       { type: 'select', label: '隐患类别:', field: 'level', span: { xs: 24, sm: 12, xxl: 12 }, props: { placeholder: '请选择隐患类别', options: level_option } },
-      { type: 'textarea', label: '隐患描述:', field: 'inspectionDescription', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入隐患描述' } }
+      { type: 'textarea', label: '隐患描述:', field: 'inspectionDescription', span: { xs: 24, sm: 24, xxl: 24 }, props: { placeholder: '请输入隐患描述',autoSize: true,showLimit: false } }
     )
   }
-
   return baseColumns
 })
 
@@ -83,9 +88,85 @@ watch(
     }
   }
 )
+const isConnecting = ref(false)
+function handleAiReport() {
+  const content = dataForm.value.inspectionItem.description
+  if (!content || !fileList.value.length) {
+    Message.error('请上传巡检照片！')
+    return
+  }
+  const userMsg = { role: 'user', content, ts: Date.now(), imageUrl: fileList.value[0].url }
+  const assistantMsg = { role: 'assistant', content: '', ts: Date.now() + 1 }
+  const messages = [userMsg, assistantMsg]
+  const sentImageUrl = fileList.value[0].response.data.url
+  console.log(sentImageUrl);
+  isConnecting.value = true
+  const token = getToken()
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token,
+  }
+  const languageFramework = `
+  请根据图片生成巡检描述，并严格遵循以下规则：
+  
+  1. 仅根据图片内容以及巡检项「${content}」描述隐患，不得编造不存在的问题。
+  2. 巡检描述使用专业、简洁的语言，不要出现空行。
+  3. 根据图片中的隐患数量判断隐患等级：
+     - 1 个隐患：GENERAL
+     - 2 个隐患：SERIOUS
+     - 3 个及以上隐患：CRITICAL
+     - 无论有几个消防隐患：CRITICAL
+  4. 回答最后必须单独输出一行，格式固定为：
+  
+  #HAZARD_LEVEL:GENERAL
+  
+  其中 GENERAL 根据实际情况替换为 GENERAL、SERIOUS 或 CRITICAL。
+  除这一行外，不允许输出任何其它等级说明，也不要修改该格式。
+  `
+  fetch('/dev-api/api/ai/chat',{
+    headers: headers,
+    method: 'POST',
+    body: JSON.stringify({
+      message: languageFramework,
+      imageUrl: sentImageUrl,
+      history: messages
+        .filter(item => item.content)
+        .map(item => ({
+          role: item.role,
+          content: item.content,
+        })),
+    }),
+  }).then(async(res) => {
+    const reader = res.body?.getReader()
+    if (!reader) {
+      Message.error('生成失败')
+      isConnecting.value = false
+      return
+    }
+    const decoder = new TextDecoder()
+    const read = async () => {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) {
+          const HAZARD_LEVEL_DICT = {
+            GENERAL: 1,
+            SERIOUS: 2,
+            CRITICAL: 3,
+          }
+          formData.value.level = HAZARD_LEVEL_DICT[assistantMsg.content.trim().split('\n')[1].split(':')[1]] || null
+          break
+        }
+        const text = decoder.decode(value, { stream: true })
+        assistantMsg.content += text
+        formData.value.inspectionDescription = assistantMsg.content.trim().split('\n')[0]
+      }
+      isConnecting.value = false
+    }
+    await read()
+  })
+}
 
 function handleChangeCheckerId(value: any) {
-  console.log(value[0]);
   formData.value.checkerId = value[0].id
 }
 
