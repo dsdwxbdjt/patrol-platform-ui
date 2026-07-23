@@ -29,6 +29,9 @@ importers:
       '@ddietr/codemirror-themes':
         specifier: ^1.4.2
         version: 1.4.2
+      '@types/marked':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@vue-office/docx':
         specifier: 1.6.0
         version: 1.6.0(vue-demi@0.14.10(vue@3.5.12(typescript@5.0.4)))(vue@3.5.12(typescript@5.0.4))
@@ -68,6 +71,9 @@ importers:
       echarts:
         specifier: ^5.4.2
         version: 5.5.0
+      highlight.js:
+        specifier: ^11.11.1
+        version: 11.11.1
       jsencrypt:
         specifier: ^3.3.2
         version: 3.3.2
@@ -80,6 +86,9 @@ importers:
       maptalks:
         specifier: ^1.12.1
         version: 1.12.1
+      marked:
+        specifier: ^18.0.7
+        version: 18.0.7
       mitt:
         specifier: ^3.0.0
         version: 3.0.1
@@ -1186,6 +1195,10 @@ packages:
 
   '@types/markdown-it@13.0.9':
     resolution: {integrity: sha512-1XPwR0+MgXLWfTn9gCsZ55AHOKW1WN+P9vr0PaQh5aerR9LLQXUbjfEAFhjmEmyoYFWAyuN2Mqkn40MZ4ukjBw==}
+
+  '@types/marked@6.0.0':
+    resolution: {integrity: sha512-jmjpa4BwUsmhxcfsgUit/7A9KbrC48Q0q8KvnY107ogcjGgTFDlIL3RpihNpx2Mu1hM4mdFQjoVc4O6JoGKHsA==}
+    deprecated: This is a stub types definition. marked provides its own type definitions, so you do not need this installed.
 
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
@@ -2865,6 +2878,10 @@ packages:
   header-case@2.0.4:
     resolution: {integrity: sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==}
 
+  highlight.js@11.11.1:
+    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
+    engines: {node: '>=12.0.0'}
+
   highlight.js@11.9.0:
     resolution: {integrity: sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==}
     engines: {node: '>=12.0.0'}
@@ -3338,6 +3355,11 @@ packages:
 
   markdown-it@14.1.0:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
+    hasBin: true
+
+  marked@18.0.7:
+    resolution: {integrity: sha512-iDVQ5ldaiKXn6b2JroX5kgRfmwgqolW7NpaEzTl1k/2Zh1njIEN9yniyLV/mOvWwtsE8OGgkjsCYvijuPk1dtA==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   mdast-util-from-markdown@0.8.5:
@@ -5805,6 +5827,10 @@ snapshots:
       '@types/linkify-it': 3.0.5
       '@types/mdurl': 1.0.5
 
+  '@types/marked@6.0.0':
+    dependencies:
+      marked: 18.0.7
+
   '@types/mdast@3.0.15':
     dependencies:
       '@types/unist': 2.0.10
@@ -7802,6 +7828,8 @@ snapshots:
       capital-case: 1.0.4
       tslib: 2.6.2
 
+  highlight.js@11.11.1: {}
+
   highlight.js@11.9.0: {}
 
   hookable@5.5.3: {}
@@ -8268,6 +8296,8 @@ snapshots:
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
+
+  marked@18.0.7: {}
 
   mdast-util-from-markdown@0.8.5:
     dependencies:
