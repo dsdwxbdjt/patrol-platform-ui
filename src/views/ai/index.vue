@@ -2,13 +2,6 @@
   <GiPageLayout>
     <div ref="aiPageRef" class="ai-page">
       <a-card class="ai-card" :bordered="false">
-        <template #extra>
-          <a-space>
-            <a-button @click="onClear" :disabled="isConnecting && !messages.length">清空</a-button>
-            <a-button status="warning" @click="onStop" :disabled="!isConnecting">停止</a-button>
-          </a-space>
-        </template>
-
         <div class="chat-body">
           <div v-if="!messages.length" class="empty">
             <div class="empty-title">开始对话</div>
@@ -29,13 +22,14 @@
           </div>
         </div>
 
-          <a-divider :margin="12" />
+        <div class="operation">
           <a-textarea v-model="question" placeholder="请输入问题…" :auto-size="{ minRows: 2, maxRows: 6 }"
             @keydown="onKeydown" />
           <a-upload action="/dev-api/api/file/upload" @change="handleUpload" @success="handleSuccess"
             :auto-upload="true" :headers="uploadHeaders" :max-count="1">
             <a-button type="primary">选择图片</a-button>
           </a-upload>
+        </div>
       </a-card>
     </div>
   </GiPageLayout>
@@ -331,19 +325,39 @@ onBeforeUnmount(() => onStop())
 .ai-page {
   padding: 16px;
   height: 100%;
-  overflow-y: auto;
   box-sizing: border-box;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .ai-card {
   width: 100%;
   height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-body {
   padding: 12px;
   border-radius: 8px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  padding-bottom:180px;
+}
+
+.operation {
+  max-width: 980px;
+  margin: 0 auto;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 12px;
+  position: fixed;
+  left: 260px;       // 左侧菜单宽度
+  right: 0;
+  bottom: 24px;
 }
 
 .empty {
@@ -363,6 +377,8 @@ onBeforeUnmount(() => onStop())
 .message-row {
   display: flex;
   margin: 10px 0;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
 .message-row.is-user {
@@ -426,6 +442,11 @@ onBeforeUnmount(() => onStop())
 
 :deep(.arco-card-body) {
   padding: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
 }
 :deep(.gi-page-layout__body) {
   position: relative;
