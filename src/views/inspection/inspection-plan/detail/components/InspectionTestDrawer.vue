@@ -40,7 +40,7 @@
       <a-empty v-else description="暂无巡检项" />
     </div>
   </a-drawer>
-  <InspectionTestModal :detail="detail" ref="modalRef"/>
+  <InspectionTestModal :detail="detail" ref="modalRef" @submitted="submitted" />
 </template>
 
 <script setup lang="ts">
@@ -66,7 +66,12 @@ const modalRef = ref()
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
   (e: 'cancel'): void
+  (e: 'refresh'): void
 }>()
+
+function submitted() {
+  emit('refresh')
+}
 
 const statusMap: Record<number, { text: string; color: string }> = {
   0: { text: '待处理', color: 'orange' },

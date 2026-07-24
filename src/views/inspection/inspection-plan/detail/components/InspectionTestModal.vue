@@ -78,6 +78,7 @@ const columns = computed(() => {
   }
   return baseColumns
 })
+const emit = defineEmits(['submitted'])
 
 watch(
   () => formData.value.result,
@@ -122,6 +123,11 @@ function handleAiReport() {
   
   其中 GENERAL 根据实际情况替换为 GENERAL、SERIOUS 或 CRITICAL。
   除这一行外，不允许输出任何其它等级说明，也不要修改该格式。
+  重要规则：
+    1. 只检查当前巡检项涉及的设备和问题。
+    2. 图片中未出现的设备，不得判断为缺失或故障。
+    3. 不得因为未看到某个设施而认定该设施不存在。
+    4. 不允许扩大检查范围。
   `
   fetch('/dev-api/api/ai/chat',{
     headers: headers,
@@ -212,6 +218,7 @@ function handleOk() {
   updateInspectionTaskItemResult(params, formData.value.id).then(res => {
     if (res.code === 200) {
       Message.success('更新成功')
+      emit('submitted')
       handleCancel()
     }
   })

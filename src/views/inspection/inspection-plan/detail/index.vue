@@ -44,6 +44,7 @@
     <InspectionTestDrawer
       v-model:visible="drawerVisible"
       :title="`${currentTask?.stations?.name || '任务'} - 详情`"
+      @refresh="expandTask(currentTask)"
       :detail="currentTask"
     />
   </GiPageLayout>

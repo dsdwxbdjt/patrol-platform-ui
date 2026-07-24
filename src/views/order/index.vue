@@ -79,6 +79,7 @@ const columns: TableInstance['columns'] = [
     fixed: 'left',
   },
   { title: '工单标题', dataIndex: 'title', width: 200, ellipsis: true, tooltip: true, fixed: 'left' },
+  { title: '所属站点', dataIndex: 'station.name', width: 200, ellipsis: true, tooltip: true, fixed: 'left' },
   { title: '问题描述', dataIndex: 'description', width: 200, ellipsis: true, tooltip: true },
   { title: '巡检时间', dataIndex: 'inspectionTime', width: 180 },
   { title: '状态', dataIndex: 'status', slotName: 'status', width: 100, align: 'center' },

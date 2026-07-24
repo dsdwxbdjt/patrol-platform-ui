@@ -2,7 +2,6 @@
   <GiPageLayout>
     <div ref="aiPageRef" class="ai-page">
       <a-card class="ai-card" :bordered="false">
-        <template #title>AI 助手</template>
         <template #extra>
           <a-space>
             <a-button @click="onClear" :disabled="isConnecting && !messages.length">清空</a-button>
@@ -68,26 +67,26 @@ type ChatMessage = { role: ChatRole; content: string; ts: number; imageUrl?: str
 
 const question = ref('')
 const messages = ref<ChatMessage[]>([
-  {
-    role: 'user',
-    content: '你好，请介绍一下Vue3的主要特性',
-    ts: Date.now() - 30000
-  },
-  {
-    role: 'assistant',
-    content: '# Vue 3 主要特性\n\n## 1. Composition API\n- 更灵活的代码组织方式\n- 更好的逻辑复用\n- TypeScript 支持更好\n\n## 2. 性能提升\n- 更快的渲染速度\n- 更小的打包体积\n\n## 3. 其他特性\n- Teleport\n- Fragments\n- Suspense',
-    ts: Date.now() - 29000
-  },
-  {
-    role: 'user',
-    content: '那如何使用Composition API呢？',
-    ts: Date.now() - 10000
-  },
-  {
-    role: 'assistant',
-    content: '使用 Composition API 非常简单！\n\n```javascript\nimport { ref, computed, onMounted } from \'vue\'\n\nexport default {\n  setup() {\n    const count = ref(0)\n    const double = computed(() => count.value * 2)\n    \n    onMounted(() => {\n      console.log(\'组件已挂载\')\n    })\n    \n    return { count, double }\n  }\n}\n```\n\n或者使用 `<script setup>` 语法糖，更简洁！',
-    ts: Date.now() - 9000
-  }
+  // {
+  //   role: 'user',
+  //   content: '你好，请介绍一下Vue3的主要特性',
+  //   ts: Date.now() - 30000
+  // },
+  // {
+  //   role: 'assistant',
+  //   content: '# Vue 3 主要特性\n\n## 1. Composition API\n- 更灵活的代码组织方式\n- 更好的逻辑复用\n- TypeScript 支持更好\n\n## 2. 性能提升\n- 更快的渲染速度\n- 更小的打包体积\n\n## 3. 其他特性\n- Teleport\n- Fragments\n- Suspense',
+  //   ts: Date.now() - 29000
+  // },
+  // {
+  //   role: 'user',
+  //   content: '那如何使用Composition API呢？',
+  //   ts: Date.now() - 10000
+  // },
+  // {
+  //   role: 'assistant',
+  //   content: '使用 Composition API 非常简单！\n\n```javascript\nimport { ref, computed, onMounted } from \'vue\'\n\nexport default {\n  setup() {\n    const count = ref(0)\n    const double = computed(() => count.value * 2)\n    \n    onMounted(() => {\n      console.log(\'组件已挂载\')\n    })\n    \n    return { count, double }\n  }\n}\n```\n\n或者使用 `<script setup>` 语法糖，更简洁！',
+  //   ts: Date.now() - 9000
+  // }
 ])
 const errorText = ref('')
 const isConnecting = ref(false)
@@ -422,11 +421,11 @@ onBeforeUnmount(() => onStop())
 }
 
 :deep(.arco-card-header) {
-  padding: 12px 360px;
+  padding: 12px;
 }
 
 :deep(.arco-card-body) {
-  padding: 12px 360px;
+  padding: 12px;
 }
 :deep(.gi-page-layout__body) {
   position: relative;
